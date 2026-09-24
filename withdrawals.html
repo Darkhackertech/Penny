@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Withdrawal History - Penny</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f8ff;
+    color:#172033;
+}
+
+header{
+    height:65px;
+    background:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.logo-text{
+    font-size:21px;
+    font-weight:bold;
+    color:#1677ff;
+}
+
+.menu-btn{
+    border:none;
+    background:#1677ff;
+    color:white;
+    width:42px;
+    height:42px;
+    border-radius:9px;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:65px;
+    width:240px;
+    height:calc(100vh - 65px);
+    background:#ffffff;
+    box-shadow:2px 0 12px rgba(0,0,0,.07);
+    padding:18px 12px;
+    overflow-y:auto;
+    transform:translateX(0);
+    transition:.3s;
+    z-index:90;
+}
+
+.sidebar a{
+    display:block;
+    text-decoration:none;
+    color:#344054;
+    padding:13px 14px;
+    margin-bottom:5px;
+    border-radius:9px;
+    font-size:15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:#eaf3ff;
+    color:#1677ff;
+    font-weight:bold;
+}
+
+main{
+    margin-left:240px;
+    padding:30px;
+    min-height:calc(100vh - 65px);
+}
+
+.page-title{
+    margin-bottom:8px;
+    font-size:30px;
+}
+
+.page-subtitle{
+    color:#667085;
+    margin-bottom:25px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+.card h3{
+    color:#667085;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.card .number{
+    font-size:25px;
+    font-weight:bold;
+    color:#1677ff;
+}
+
+.table-card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+    overflow-x:auto;
+}
+
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    gap:10px;
+}
+
+.table-header h2{
+    font-size:20px;
+}
+
+.filter{
+    padding:10px 12px;
+    border:1px solid #d0d5dd;
+    border-radius:8px;
+    outline:none;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:800px;
+}
+
+th,
+td{
+    padding:14px 10px;
+    border-bottom:1px solid #eaecf0;
+    text-align:left;
+    font-size:14px;
+}
+
+th{
+    background:#f8fafc;
+    color:#475467;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#fff4cc;
+    color:#946200;
+}
+
+.approved{
+    background:#dff8e8;
+    color:#137333;
+}
+
+.rejected{
+    background:#ffe2e2;
+    color:#b42318;
+}
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#667085;
+}
+
+.empty-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.notice{
+    margin-top:20px;
+    background:#eef6ff;
+    border-left:4px solid #1677ff;
+    padding:15px;
+    border-radius:8px;
+    color:#475467;
+    line-height:1.6;
+}
+
+footer{
+    margin-left:240px;
+    text-align:center;
+    padding:20px;
+    color:#667085;
+    font-size:13px;
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        transform:translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    main{
+        margin-left:0;
+        padding:20px 14px;
+    }
+
+    footer{
+        margin-left:0;
+    }
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .page-title{
+        font-size:25px;
+    }
+
+    .table-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .filter{
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo-area">
+        <img src="./images/penny1.jpg" class="logo" alt="Penny">
+        <div class="logo-text">Penny</div>
+    </div>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+</header>
+
+
+<aside class="sidebar" id="sidebar">
+
+    <a href="dashboard.html">Dashboard</a>
+    <a href="tasks.html">Tasks</a>
+    <a href="earnings.html">My Earnings</a>
+    <a href="daily-bonus.html">Daily Bonus</a>
+    <a href="withdraw.html">Withdraw</a>
+    <a href="withdrawals.html" class="active">Withdrawal History</a>
+    <a href="transactions.html">Transactions</a>
+    <a href="referral.html">Referral</a>
+    <a href="referrals.html">Referral History</a>
+    <a href="profile.html">Profile</a>
+    <a href="settings.html">Settings</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="#" onclick="logout()">Logout</a>
+
+</aside>
+
+
+<main>
+
+    <h1 class="page-title">Withdrawal History</h1>
+
+    <p class="page-subtitle">
+        View your previous withdrawal requests and their current status.
+    </p>
+
+
+    <section class="summary">
+
+        <div class="card">
+            <h3>Total Requests</h3>
+            <div class="number" id="totalRequests">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Pending Requests</h3>
+            <div class="number" id="pendingRequests">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Withdrawn</h3>
+            <div class="number" id="totalWithdrawn">₦0.00</div>
+        </div>
+
+    </section>
+
+
+    <section class="table-card">
+
+        <div class="table-header">
+
+            <h2>Your Withdrawals</h2>
+
+            <select class="filter" id="statusFilter" onchange="renderWithdrawals()">
+                <option value="all">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
+        </div>
+
+
+        <div id="withdrawalContent"></div>
+
+    </section>
+
+
+    <div class="notice">
+        <strong>Demo Mode:</strong>
+        Withdrawal records are currently stored in your browser using localStorage.
+        They are not connected to a real banking system yet.
+    </div>
+
+</main>
+
+
+<footer>
+    © 2026 Penny. All rights reserved.
+</footer>
+
+
+<script>
+
+function toggleMenu(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+
+function getWithdrawals(){
+
+    try{
+
+        const saved = localStorage.getItem("pennyWithdrawals");
+
+        if(!saved){
+            return [];
+        }
+
+        const data = JSON.parse(saved);
+
+        return Array.isArray(data) ? data : [];
+
+    }catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+function formatMoney(amount){
+
+    const value = Number(amount) || 0;
+
+    return "₦" + value.toLocaleString("en-NG",{
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    });
+
+}
+
+
+function getStatusClass(status){
+
+    if(status === "Approved"){
+        return "approved";
+    }
+
+    if(status === "Rejected"){
+        return "rejected";
+    }
+
+    return "pending";
+
+}
+
+
+function renderWithdrawals(){
+
+    const withdrawals = getWithdrawals();
+
+    const filter = document.getElementById("statusFilter").value;
+
+    const filtered = withdrawals.filter(function(item){
+
+        if(filter === "all"){
+            return true;
+        }
+
+        return item.status === filter;
+
+    });
+
+
+    document.getElementById("totalRequests").textContent =
+        withdrawals.length;
+
+
+    const pending = withdrawals.filter(function(item){
+
+        return item.status === "Pending";
+
+    }).length;
+
+
+    document.getElementById("pendingRequests").textContent =
+        pending;
+
+
+    const total = withdrawals.reduce(function(sum,item){
+
+        return sum + (Number(item.amount) || 0);
+
+    },0);
+
+
+    document.getElementById("totalWithdrawn").textContent =
+        formatMoney(total);
+
+
+    const container =
+        document.getElementById("withdrawalContent");
+
+
+    if(filtered.length === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">💳</div>
+                <h3>No withdrawal records found</h3>
+                <p>Your withdrawal requests will appear here.</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const sorted = [...filtered].reverse();
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Bank</th>
+                    <th>Account</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+    `;
+
+
+    sorted.forEach(function(item){
+
+        const status = item.status || "Pending";
+
+        html += `
+
+            <tr>
+
+                <td>
+                    <strong>${formatMoney(item.amount)}</strong>
+                </td>
+
+                <td>
+                    ${item.method || "Bank Transfer"}
+                </td>
+
+                <td>
+                    ${item.bank || "-"}
+                </td>
+
+                <td>
+                    ${item.accountNumber || "-"}
+                </td>
+
+                <td>
+                    ${item.reference || "-"}
+                </td>
+
+                <td>
+                    ${item.date || "-"}
+                </td>
+
+                <td>
+                    <span class="status ${getStatusClass(status)}">
+                        ${status}
+                    </span>
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+            </tbody>
+        </table>
+    `;
+
+
+    container.innerHTML = html;
+
+}
+
+
+function logout(){
+
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("pennyUser");
+
+    window.location.replace("login.html");
+
+}
+
+
+renderWithdrawals();
+
+</script>
+
+</body>
+</html>

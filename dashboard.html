@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Penny - Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            background: #ffffff;
+            height: 65px;
+            border-bottom: 1px solid #dfe7f3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1264d8;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            background: #1264d8;
+            color: #ffffff;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #ffffff;
+            border-right: 1px solid #dfe7f3;
+            padding: 20px 12px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            color: #7a8799;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px 12px 12px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 14px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            color: #435066;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: #edf5ff;
+            color: #1264d8;
+        }
+
+        .nav-link.active {
+            background: #1264d8;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .logout {
+            color: #d12f2f;
+            margin-top: 15px;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+            max-width: 1200px;
+        }
+
+        .welcome {
+            background: linear-gradient(135deg, #1264d8, #3192f5);
+            color: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            font-size: 14px;
+        }
+
+        .balance-card {
+            background: #ffffff;
+            border: 1px solid #dfe7f3;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .balance-title {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .balance {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1264d8;
+            margin-bottom: 18px;
+        }
+
+        .balance-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #1264d8;
+            color: white;
+        }
+
+        .btn-light {
+            background: #edf5ff;
+            color: #1264d8;
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #dfe7f3;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .card p {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .card-link {
+            color: #1264d8;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .info-box {
+            background: #ffffff;
+            border: 1px solid #dfe7f3;
+            border-radius: 13px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-box h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #68758a;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        footer {
+            background: white;
+            border-top: 1px solid #dfe7f3;
+            text-align: center;
+            padding: 22px;
+            color: #7a8799;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 65px;
+                bottom: 0;
+                z-index: 999;
+                transition: 0.25s;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            main {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            header {
+                padding: 0 12px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .logo img {
+                width: 35px;
+                height: 35px;
+            }
+
+            main {
+                padding: 15px 10px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+
+            .welcome h1 {
+                font-size: 22px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .balance {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <a href="dashboard.html" class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+            <span>Penny</span>
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <div class="layout">
+
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-title">
+                Main Menu
+            </div>
+
+            <a href="dashboard.html" class="nav-link active">
+                Dashboard
+            </a>
+
+            <a href="tasks.html" class="nav-link">
+                Tasks
+            </a>
+
+            <a href="earnings.html" class="nav-link">
+                My Earnings
+            </a>
+
+            <a href="daily-bonus.html" class="nav-link">
+                Daily Bonus
+            </a>
+
+            <a href="withdraw.html" class="nav-link">
+                Withdraw
+            </a>
+
+            <a href="withdrawals.html" class="nav-link">
+                Withdrawal History
+            </a>
+
+            <a href="transactions.html" class="nav-link">
+                Transactions
+            </a>
+
+            <a href="referral.html" class="nav-link">
+                Referral
+            </a>
+
+            <a href="referrals.html" class="nav-link">
+                Referral History
+            </a>
+
+            <a href="profile.html" class="nav-link">
+                Profile
+            </a>
+
+            <a href="settings.html" class="nav-link">
+                Settings
+            </a>
+
+            <a href="notifications.html" class="nav-link">
+                Notifications
+            </a>
+
+            <a href="#" class="nav-link logout" onclick="logout()">
+                Logout
+            </a>
+
+        </aside>
+
+
+        <main>
+
+            <section class="welcome">
+
+                <h1>
+                    Welcome to Penny
+                </h1>
+
+                <p id="welcomeText">
+                    Hello, Penny user. Welcome back to your dashboard.
+                </p>
+
+            </section>
+
+
+            <section class="balance-card">
+
+                <div class="balance-title">
+                    Available Balance
+                </div>
+
+                <div class="balance" id="balance">
+                    ₦0.00
+                </div>
+
+                <div class="balance-buttons">
+
+                    <a href="withdraw.html" class="btn btn-primary">
+                        Withdraw
+                    </a>
+
+                    <a href="tasks.html" class="btn btn-light">
+                        Earn More
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <h2 class="section-title">
+                Quick Access
+            </h2>
+
+
+            <section class="cards">
+
+                <div class="card">
+                    <h3>Tasks</h3>
+
+                    <p>
+                        Explore available activities and earn rewards.
+                    </p>
+
+                    <a href="tasks.html" class="card-link">
+                        View Tasks
+                    </a>
+                </div>
+
+
+                <div class="card">
+                    <h3>Daily Bonus</h3>
+
+                    <p>
+                        Claim your daily reward when it is available.
+                    </p>
+
+                    <a href="daily-bonus.html" class="card-link">
+                        Claim Bonus
+                    </a>
+                </div>
+
+
+                <div class="card">
+                    <h3>Referral</h3>
+
+                    <p>
+                        Invite friends and track your referral rewards.
+                    </p>
+
+                    <a href="referral.html" class="card-link">
+                        Invite Friends
+                    </a>
+                </div>
+
+
+                <div class="card">
+                    <h3>Profile</h3>
+
+                    <p>
+                        View and manage your Penny account information.
+                    </p>
+
+                    <a href="profile.html" class="card-link">
+                        My Profile
+                    </a>
+                </div>
+
+            </section>
+
+
+            <section class="info-box">
+
+                <h2>
+                    Your Penny Account
+                </h2>
+
+                <p>
+                    Complete available activities, claim your daily bonus,
+                    invite friends through the referral system and request
+                    withdrawals when you meet the applicable requirements.
+                </p>
+
+            </section>
+
+
+            <section class="info-box">
+
+                <h2>
+                    Demo Mode
+                </h2>
+
+                <p>
+                    This is currently a front-end demonstration. The balance
+                    shown here is stored in your browser using localStorage.
+                    A real Penny system will require a secure backend and
+                    database.
+                </p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList
+                .toggle("open");
+
+        }
+
+
+        function loadUser() {
+
+            const savedUser =
+                localStorage.getItem("pennyUser");
+
+            if (!savedUser) {
+                return;
+            }
+
+            try {
+
+                const user =
+                    JSON.parse(savedUser);
+
+                if (user.fullName) {
+
+                    document.getElementById("welcomeText").textContent =
+                        "Hello, " + user.fullName +
+                        ". Welcome back to your dashboard.";
+
+                }
+
+            } catch (error) {
+
+                console.log("User data could not be loaded.");
+
+            }
+
+        }
+
+
+        function loadBalance() {
+
+            const balance =
+                Number(
+                    localStorage.getItem("pennyBalance") || 0
+                );
+
+            document.getElementById("balance").textContent =
+                "₦" + balance.toLocaleString("en-NG", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("pennyUser");
+
+            window.location.replace("login.html");
+
+        }
+
+
+        loadUser();
+        loadBalance();
+
+    </script>
+
+</body>
+
+</html>

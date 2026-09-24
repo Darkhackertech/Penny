@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Penny - Admin Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef7ff, #dceeff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #172033;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #dce6f0;
+            box-shadow: 0 12px 35px rgba(0, 72, 140, 0.12);
+            padding: 32px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #eaf4ff;
+            color: #087ff5;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 27px;
+            margin-bottom: 8px;
+            color: #14213d;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #35435a;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd7e5;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            background: #ffffff;
+        }
+
+        input:focus {
+            border-color: #087ff5;
+            box-shadow: 0 0 0 3px rgba(8, 127, 245, 0.08);
+        }
+
+        .password-input {
+            padding-right: 85px;
+        }
+
+        .show-btn {
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            height: 34px;
+            border: none;
+            background: #eef7ff;
+            color: #087ff5;
+            border-radius: 6px;
+            padding: 0 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .login-btn {
+            width: 100%;
+            border: none;
+            background: #087ff5;
+            color: #ffffff;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            background: #066dcc;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #c62828;
+            border: 1px solid #ffd0d0;
+        }
+
+        .success {
+            background: #e7f8ee;
+            color: #16834b;
+            border: 1px solid #c7efd8;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #087ff5;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 10px;
+            color: #68758a !important;
+            font-weight: normal !important;
+        }
+
+        .security-note {
+            margin-top: 22px;
+            background: #fff8e6;
+            border-left: 4px solid #e0a500;
+            padding: 13px;
+            border-radius: 7px;
+            color: #6d5717;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-card {
+                padding: 24px 18px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-card">
+
+        <div class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+        </div>
+
+        <div style="text-align: center;">
+            <span class="admin-badge">ADMIN AREA</span>
+        </div>
+
+        <h1>Admin Login</h1>
+
+        <p class="subtitle">
+            Sign in to manage Penny users, tasks, withdrawals and other
+            administrative features.
+        </p>
+
+        <div class="message" id="message"></div>
+
+        <form id="adminLoginForm">
+
+            <div class="form-group">
+
+                <label for="adminEmail">
+                    Admin Email or Username
+                </label>
+
+                <input
+                    type="text"
+                    id="adminEmail"
+                    placeholder="Enter admin email or username"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="adminPassword">
+                    Password
+                </label>
+
+                <div class="input-wrap">
+
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        class="password-input"
+                        placeholder="Enter admin password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="show-btn"
+                        onclick="togglePassword()"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="login-btn">
+                Admin Sign In
+            </button>
+
+        </form>
+
+        <div class="links">
+
+            <a href="forgot-password.html">
+                Forgot Password?
+            </a>
+
+            <a href="dashboard.html" class="back-link">
+                ← Back to Penny
+            </a>
+
+        </div>
+
+        <div class="security-note">
+            <strong>Security notice:</strong>
+            This is currently a front-end demonstration. Do not use real
+            administrator credentials here until Penny is connected to a
+            secure backend authentication system.
+        </div>
+
+        <footer>
+            © 2026 Penny. All rights reserved.
+        </footer>
+
+    </main>
+
+    <script>
+
+        /* Prevent a logged-in admin from returning to the login page */
+        if (localStorage.getItem("pennyAdminLoggedIn") === "true") {
+            window.location.replace("admin/");
+        }
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("adminPassword");
+
+            const button =
+                document.querySelector(".show-btn");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                button.textContent = "Hide";
+
+            } else {
+
+                password.type = "password";
+                button.textContent = "Show";
+
+            }
+        }
+
+        document
+            .getElementById("adminLoginForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("adminEmail")
+                    .value.trim();
+
+                const password =
+                    document.getElementById("adminPassword")
+                    .value;
+
+                const message =
+                    document.getElementById("message");
+
+                if (!username || !password) {
+
+                    message.style.display = "block";
+                    message.className = "message error";
+                    message.textContent =
+                        "Please enter your admin login details.";
+
+                    return;
+                }
+
+                /*
+                 * TEMPORARY FRONT-END DEMO
+                 *
+                 * This does NOT verify real admin credentials.
+                 * A secure backend authentication system should be
+                 * connected before this is used for a real website.
+                 */
+
+                localStorage.setItem(
+                    "pennyAdminLoggedIn",
+                    "true"
+                );
+
+                localStorage.setItem(
+                    "pennyAdminUser",
+                    username
+                );
+
+                message.style.display = "block";
+                message.className = "message success";
+                message.textContent =
+                    "Admin login successful. Opening dashboard...";
+
+                setTimeout(function() {
+                    window.location.replace("admin/");
+                }, 700);
+
+            });
+
+    </script>
+
+</body>
+</html>

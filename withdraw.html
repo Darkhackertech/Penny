@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Withdraw</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1677ff;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 10px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 245px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            border-right: 1px solid #e4eaf3;
+            padding: 20px 12px;
+            overflow-y: auto;
+            transition: .3s;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #445066;
+            padding: 13px 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #1677ff, #0057d9);
+            color: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 25px rgba(22, 119, 255, .18);
+        }
+
+        .balance-label {
+            opacity: .9;
+            margin-bottom: 7px;
+        }
+
+        .balance {
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e4eaf3;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .form-card h2 {
+            font-size: 21px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d7deea;
+            border-radius: 9px;
+            outline: none;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #1677ff;
+            box-shadow: 0 0 0 3px rgba(22, 119, 255, .08);
+        }
+
+        .hint {
+            color: #7a8494;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .withdraw-btn {
+            width: 100%;
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 14px;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .withdraw-btn:hover {
+            background: #005bd8;
+        }
+
+        .withdraw-btn:disabled {
+            background: #9aa6b5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-bottom: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            background: #e7f8ee;
+            border: 1px solid #a7dfbd;
+            color: #176b3a;
+        }
+
+        .message.error {
+            background: #fff0f0;
+            border: 1px solid #efb4b4;
+            color: #a52828;
+        }
+
+        .history-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #1677ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .notice {
+            margin-top: 22px;
+            background: #fff8df;
+            border: 1px solid #f2df9b;
+            color: #765c00;
+            padding: 16px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            padding: 25px 10px;
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                left: -260px;
+                z-index: 99;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+        }
+
+        @media(max-width:450px) {
+
+            header {
+                padding: 0 12px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .logo img {
+                width: 36px;
+                height: 36px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .balance {
+                font-size: 29px;
+            }
+
+            .form-card {
+                padding: 18px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <img src="./images/penny1.jpg" alt="Penny">
+            <span>Penny</span>
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="earnings.html">My Earnings</a>
+        <a href="daily-bonus.html">Daily Bonus</a>
+        <a href="withdraw.html" class="active">Withdraw</a>
+        <a href="withdrawals.html">Withdrawal History</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="referral.html">Referral</a>
+        <a href="referrals.html">Referral History</a>
+        <a href="profile.html">Profile</a>
+        <a href="settings.html">Settings</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="#" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="container">
+
+            <h1>Withdraw</h1>
+
+            <p class="subtitle">
+                Request a withdrawal from your available Penny balance.
+            </p>
+
+
+            <!-- BALANCE -->
+
+            <div class="balance-card">
+
+                <div class="balance-label">
+                    Available Balance
+                </div>
+
+                <div class="balance" id="balance">
+                    ₦0.00
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div class="message" id="message">
+            </div>
+
+
+            <!-- FORM -->
+
+            <div class="form-card">
+
+                <h2>Withdrawal Details</h2>
+
+
+                <form id="withdrawForm">
+
+
+                    <div class="form-group">
+
+                        <label for="method">
+                            Withdrawal Method
+                        </label>
+
+                        <select id="method" required>
+
+                            <option value="">
+                                Select method
+                            </option>
+
+                            <option value="Bank Transfer">
+                                Bank Transfer
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="accountName">
+                            Account Name
+                        </label>
+
+                        <input type="text" id="accountName" placeholder="Enter account name" required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="accountNumber">
+                            Account Number
+                        </label>
+
+                        <input type="text" id="accountNumber" inputmode="numeric" maxlength="10"
+                            placeholder="10-digit account number" required>
+
+                        <div class="hint">
+                            Enter exactly 10 digits.
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="bank">
+                            Bank
+                        </label>
+
+                        <select id="bank" required>
+
+                            <option value="">
+                                Select bank
+                            </option>
+
+                            <option>Access Bank</option>
+                            <option>Citibank Nigeria</option>
+                            <option>Ecobank</option>
+                            <option>Fidelity Bank</option>
+                            <option>First Bank</option>
+                            <option>FCMB</option>
+                            <option>Globus Bank</option>
+                            <option>GTBank</option>
+                            <option>Heritage Bank</option>
+                            <option>Keystone Bank</option>
+                            <option>Moniepoint</option>
+                            <option>OPay</option>
+                            <option>PalmPay</option>
+                            <option>Polaris Bank</option>
+                            <option>Providus Bank</option>
+                            <option>Stanbic IBTC</option>
+                            <option>Standard Chartered</option>
+                            <option>Sterling Bank</option>
+                            <option>UBA</option>
+                            <option>Union Bank</option>
+                            <option>Unity Bank</option>
+                            <option>Wema Bank</option>
+                            <option>Zenith Bank</option>
+                            <option>Other</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="amount">
+                            Withdrawal Amount
+                        </label>
+
+                        <input type="number" id="amount" min="1" step="1" placeholder="Enter amount" required>
+
+                        <div class="hint" id="amountHint">
+                            Available: ₦0.00
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit" class="withdraw-btn" id="withdrawButton">
+
+                        Request Withdrawal
+
+                    </button>
+
+
+                </form>
+
+
+                <a href="withdrawals.html" class="history-link">
+
+                    View Withdrawal History
+
+                </a>
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>Demo Mode:</strong>
+                This withdrawal system currently uses browser storage.
+                No real bank transfer is made. A real Penny platform must
+                verify withdrawal requests on a secure server before
+                processing payments.
+
+            </div>
+
+        </div>
+
+
+        <footer>
+            © 2026 Penny. All rights reserved.
+        </footer>
+
+    </main>
+
+
+    <script>
+
+        const form =
+            document.getElementById("withdrawForm");
+
+        const balanceDisplay =
+            document.getElementById("balance");
+
+        const amountInput =
+            document.getElementById("amount");
+
+        const amountHint =
+            document.getElementById("amountHint");
+
+        const message =
+            document.getElementById("message");
+
+        const withdrawButton =
+            document.getElementById("withdrawButton");
+
+
+        const BALANCE_KEY =
+            "pennyBalance";
+
+        const WITHDRAWN_KEY =
+            "pennyWithdrawn";
+
+        const WITHDRAWALS_KEY =
+            "pennyWithdrawals";
+
+        const TRANSACTIONS_KEY =
+            "pennyTransactions";
+
+
+        /*
+            Toggle mobile menu.
+        */
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+
+
+        /*
+            Format Nigerian currency.
+        */
+
+        function formatMoney(amount) {
+
+            return "₦" +
+                Number(amount).toLocaleString("en-NG", {
+
+                    minimumFractionDigits: 2,
+
+                    maximumFractionDigits: 2
+
+                });
+
+        }
+
+
+        /*
+            Get current balance safely.
+        */
+
+        function getBalance() {
+
+            const value =
+                Number(
+                    localStorage.getItem(BALANCE_KEY) || 0
+                );
+
+
+            if (
+                !Number.isFinite(value) ||
+                value < 0
+            ) {
+
+                return 0;
+
+            }
+
+
+            return value;
+
+        }
+
+
+        /*
+            Display balance.
+        */
+
+        function showBalance() {
+
+            const balance =
+                getBalance();
+
+
+            balanceDisplay.textContent =
+                formatMoney(balance);
+
+
+            amountHint.textContent =
+                "Available: " +
+                formatMoney(balance);
+
+
+            /*
+                Update maximum allowed amount.
+            */
+
+            amountInput.max =
+                balance;
+
+        }
+
+
+        /*
+            Show message.
+        */
+
+        function showMessage(text, type) {
+
+            message.textContent =
+                text;
+
+            message.className =
+                "message " + type;
+
+            message.style.display =
+                "block";
+
+        }
+
+
+        /*
+            Hide message.
+        */
+
+        function hideMessage() {
+
+            message.style.display =
+                "none";
+
+        }
+
+
+        /*
+            Clean account number.
+        */
+
+        document
+            .getElementById("accountNumber")
+            .addEventListener("input", function () {
+
+                this.value =
+                    this.value
+                        .replace(/\D/g, "")
+                        .slice(0, 10);
+
+            });
+
+
+        /*
+            Update amount hint while typing.
+        */
+
+        amountInput.addEventListener(
+            "input",
+            function () {
+
+                const balance =
+                    getBalance();
+
+                const amount =
+                    Number(this.value);
+
+
+                if (
+                    Number.isFinite(amount) &&
+                    amount > balance
+                ) {
+
+                    amountHint.textContent =
+                        "Amount cannot exceed " +
+                        formatMoney(balance);
+
+                    amountHint.style.color =
+                        "#a52828";
+
+                } else {
+
+                    amountHint.textContent =
+                        "Available: " +
+                        formatMoney(balance);
+
+                    amountHint.style.color =
+                        "#7a8494";
+
+                }
+
+            }
+        );
+
+
+        /*
+            Safely load withdrawal history.
+        */
+
+        function getWithdrawals() {
+
+            try {
+
+                const saved =
+                    JSON.parse(
+                        localStorage.getItem(
+                            WITHDRAWALS_KEY
+                        ) || "[]"
+                    );
+
+
+                return Array.isArray(saved)
+                    ? saved
+                    : [];
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        /*
+            Safely load transactions.
+        */
+
+        function getTransactions() {
+
+            try {
+
+                const saved =
+                    JSON.parse(
+                        localStorage.getItem(
+                            TRANSACTIONS_KEY
+                        ) || "[]"
+                    );
+
+
+                return Array.isArray(saved)
+                    ? saved
+                    : [];
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        /*
+            Save withdrawal record.
+        */
+
+        function saveWithdrawal(data) {
+
+            const withdrawals =
+                getWithdrawals();
+
+
+            withdrawals.push(data);
+
+
+            localStorage.setItem(
+                WITHDRAWALS_KEY,
+                JSON.stringify(withdrawals)
+            );
+
+        }
+
+
+        /*
+            Save transaction record.
+        */
+
+        function saveTransaction(data) {
+
+            const transactions =
+                getTransactions();
+
+
+            transactions.push(data);
+
+
+            localStorage.setItem(
+                TRANSACTIONS_KEY,
+                JSON.stringify(transactions)
+            );
+
+        }
+
+
+        /*
+            Submit withdrawal.
+        */
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+                hideMessage();
+
+
+                /*
+                    Get all form values.
+                */
+
+                const method =
+                    document.getElementById("method").value;
+
+                const accountName =
+                    document
+                        .getElementById("accountName")
+                        .value
+                        .trim();
+
+                const accountNumber =
+                    document
+                        .getElementById("accountNumber")
+                        .value
+                        .trim();
+
+                const bank =
+                    document.getElementById("bank").value;
+
+                const amount =
+                    Number(amountInput.value);
+
+
+                /*
+                    Get balance at the exact moment
+                    of withdrawal validation.
+                */
+
+                const balance =
+                    getBalance();
+
+
+                /*
+                    METHOD VALIDATION
+                */
+
+                if (!method) {
+
+                    showMessage(
+                        "Please select a withdrawal method.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    ACCOUNT NAME VALIDATION
+                */
+
+                if (accountName.length < 2) {
+
+                    showMessage(
+                        "Please enter a valid account name.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    ACCOUNT NUMBER VALIDATION
+                */
+
+                if (!/^\d{10}$/.test(accountNumber)) {
+
+                    showMessage(
+                        "Account number must contain exactly 10 digits.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    BANK VALIDATION
+                */
+
+                if (!bank) {
+
+                    showMessage(
+                        "Please select your bank.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    AMOUNT VALIDATION
+                */
+
+                if (
+                    !Number.isFinite(amount) ||
+                    amount <= 0
+                ) {
+
+                    showMessage(
+                        "Please enter a valid withdrawal amount.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    PREVENT DECIMAL AMOUNTS
+                    for this demo.
+                */
+
+                if (!Number.isInteger(amount)) {
+
+                    showMessage(
+                        "Withdrawal amount must be a whole number.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    MOST IMPORTANT CHECK:
+                    User cannot withdraw more
+                    than the current balance.
+                */
+
+                if (amount > balance) {
+
+                    showMessage(
+                        "Insufficient balance. You only have " +
+                        formatMoney(balance) +
+                        " available.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    Prevent withdrawal when balance is zero.
+                */
+
+                if (balance <= 0) {
+
+                    showMessage(
+                        "You do not have enough balance to withdraw.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                    Disable button while processing
+                    the demo request.
+                */
+
+                withdrawButton.disabled =
+                    true;
+
+                withdrawButton.textContent =
+                    "Processing...";
+
+
+                /*
+                    Calculate new balance.
+                */
+
+                const newBalance =
+                    balance - amount;
+
+
+                /*
+                    Update balance.
+                */
+
+                localStorage.setItem(
+                    BALANCE_KEY,
+                    String(newBalance)
+                );
+
+
+                /*
+                    Update total withdrawn.
+                */
+
+                const previousWithdrawn =
+                    Number(
+                        localStorage.getItem(
+                            WITHDRAWN_KEY
+                        ) || 0
+                    );
+
+
+                localStorage.setItem(
+                    WITHDRAWN_KEY,
+                    String(
+                        previousWithdrawn + amount
+                    )
+                );
+
+
+                /*
+                    Create a unique reference.
+                */
+
+                const reference =
+                    "PEN-" +
+                    Date.now();
+
+
+                /*
+                    Withdrawal record.
+                */
+
+                const withdrawal = {
+
+                    id: reference,
+
+                    reference: reference,
+
+                    amount: amount,
+
+                    method: method,
+
+                    accountName: accountName,
+
+                    accountNumber:
+                        "****" +
+                        accountNumber.slice(-4),
+
+                    bank: bank,
+
+                    status: "Pending",
+
+                    date:
+                        new Date().toLocaleString("en-NG"),
+
+                    timestamp:
+                        Date.now()
+
+                };
+
+
+                saveWithdrawal(
+                    withdrawal
+                );
+
+
+                /*
+                    Transaction record.
+                */
+
+                saveTransaction({
+
+                    id:
+                        "TXN-" +
+                        Date.now(),
+
+                    reference:
+                        reference,
+
+                    description:
+                        "Bank Withdrawal",
+
+                    type:
+                        "debit",
+
+                    amount:
+                        amount,
+
+                    status:
+                        "Pending",
+
+                    date:
+                        new Date().toLocaleString("en-NG"),
+
+                    timestamp:
+                        Date.now()
+
+                });
+
+
+                /*
+                    Update screen.
+                */
+
+                showBalance();
+
+
+                showMessage(
+                    "Withdrawal request created successfully. " +
+                    formatMoney(amount) +
+                    " has been reserved from your balance. " +
+                    "Reference: " +
+                    reference,
+                    "success"
+                );
+
+
+                /*
+                    Clear form.
+                */
+
+                form.reset();
+
+
+                withdrawButton.disabled =
+                    false;
+
+                withdrawButton.textContent =
+                    "Request Withdrawal";
+
+            }
+        );
+
+
+        /*
+            Logout.
+        */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "isLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "pennyUser"
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+
+        /*
+            Start page.
+        */
+
+        showBalance();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Withdrawals Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            height: 70px;
+            background: #fff;
+            border-bottom: 1px solid #dce6f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-area span {
+            color: #1677ff;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        aside {
+            width: 245px;
+            background: #fff;
+            border-right: 1px solid #dce6f0;
+            padding: 20px 12px;
+        }
+
+        .admin-label {
+            background: #eaf3ff;
+            color: #1677ff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 14px;
+            margin-bottom: 6px;
+            border-radius: 10px;
+            color: #4c5a6a;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: #eef6ff;
+            color: #1677ff;
+        }
+
+        .nav-link.active {
+            background: #1677ff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .logout-link {
+            color: #d62828;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .page-title p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-card small {
+            display: block;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .stat-card strong {
+            color: #1677ff;
+            font-size: 25px;
+        }
+
+        .withdrawals-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filters input,
+        .filters select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd8e5;
+            border-radius: 9px;
+            outline: none;
+            background: white;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #1677ff;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f7faff;
+            color: #526174;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .username {
+            color: #718096;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .amount {
+            font-weight: bold;
+            color: #172033;
+        }
+
+        .account {
+            font-size: 13px;
+            color: #526174;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fff4d8;
+            color: #9a6a00;
+        }
+
+        .approved {
+            background: #e5f8ed;
+            color: #16834b;
+        }
+
+        .rejected {
+            background: #ffe7e7;
+            color: #c62828;
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            border: 0;
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .view-btn {
+            background: #eaf3ff;
+            color: #1677ff;
+        }
+
+        .approve-btn {
+            background: #e5f8ed;
+            color: #16834b;
+        }
+
+        .reject-btn {
+            background: #fff0f0;
+            color: #d62828;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #718096;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            background: #eaf3ff;
+            color: #1677ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto auto 15px;
+            font-size: 27px;
+        }
+
+        .empty-state h3 {
+            color: #253044;
+            margin-bottom: 8px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef6ff;
+            border-left: 4px solid #1677ff;
+            border-radius: 10px;
+            color: #4b5c70;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #7a8795;
+            font-size: 13px;
+        }
+
+        @media (max-width: 950px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            aside {
+                position: fixed;
+                top: 70px;
+                left: -260px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+                transition: 0.3s;
+            }
+
+            aside.show {
+                left: 0;
+            }
+
+            main {
+                padding: 22px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0 15px;
+            }
+
+            .logo-area span {
+                font-size: 19px;
+            }
+
+            .page-title h1 {
+                font-size: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card strong {
+                font-size: 21px;
+            }
+
+            .withdrawals-card {
+                padding: 15px;
+            }
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <a href="../dashboard.html" class="logo-area">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+            <span>Penny Admin</span>
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+    <div class="layout">
+
+        <aside id="sidebar">
+
+            <div class="admin-label">
+                ADMIN PANEL
+            </div>
+
+            <a href="index.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="users.html" class="nav-link">
+                Users
+            </a>
+
+            <a href="tasks.html" class="nav-link">
+                Tasks Management
+            </a>
+
+            <a href="withdrawals.html" class="nav-link active">
+                Withdrawals
+            </a>
+
+            <a href="transactions.html" class="nav-link">
+                Transactions
+            </a>
+
+            <a href="referrals.html" class="nav-link">
+                Referrals
+            </a>
+
+            <a href="settings.html" class="nav-link">
+                Site Settings
+            </a>
+
+            <a href="../dashboard.html" class="nav-link">
+                User Dashboard
+            </a>
+
+            <a href="#" class="nav-link logout-link" onclick="adminLogout()">
+                Logout
+            </a>
+
+        </aside>
+
+        <main>
+
+            <div class="page-title">
+                <h1>Withdrawals Management</h1>
+                <p>Review and manage user withdrawal requests.</p>
+            </div>
+
+            <section class="stats">
+
+                <div class="stat-card">
+                    <small>Total Requests</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>Pending</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>Approved</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>Total Paid</small>
+                    <strong>₦0.00</strong>
+                </div>
+
+            </section>
+
+            <section class="withdrawals-card">
+
+                <div class="card-header">
+                    <h2>Withdrawal Requests</h2>
+                </div>
+
+                <div class="filters">
+
+                    <input type="search" id="searchWithdrawal" placeholder="Search username, email or reference..."
+                        oninput="filterWithdrawals()">
+
+                    <select id="statusFilter" onchange="filterWithdrawals()">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Bank Details</th>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="withdrawalsBody">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="empty-state" id="emptyState">
+
+                    <div class="empty-icon">
+                        ₦
+                    </div>
+
+                    <h3>No withdrawal requests</h3>
+
+                    <p>
+                        Withdrawal requests will appear here when users
+                        submit them through the Penny withdrawal system.
+                    </p>
+
+                </div>
+
+                <div class="notice">
+                    <strong>Demo Mode:</strong>
+                    Withdrawal requests are not connected to a real
+                    payment processor or database yet. Never approve a
+                    real withdrawal until the backend, balance system,
+                    transaction records and payment verification are
+                    securely connected.
+                </div>
+
+            </section>
+
+            <footer>
+                © 2026 Penny. All rights reserved.
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script>
+
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("show");
+        }
+
+        const demoWithdrawals = [
+            {
+                name: "Demo User One",
+                username: "demouser01",
+                email: "demo@example.com",
+                amount: "₦5,000.00",
+                bank: "GTBank",
+                account: "****1234",
+                reference: "PEN-000001",
+                date: "Sep 23, 2026",
+                status: "pending"
+            },
+            {
+                name: "Demo User Two",
+                username: "demouser02",
+                email: "demo2@example.com",
+                amount: "₦2,500.00",
+                bank: "First Bank",
+                account: "****5678",
+                reference: "PEN-000002",
+                date: "Sep 20, 2026",
+                status: "approved"
+            },
+            {
+                name: "Demo User Three",
+                username: "demouser03",
+                email: "demo3@example.com",
+                amount: "₦1,000.00",
+                bank: "UBA",
+                account: "****9012",
+                reference: "PEN-000003",
+                date: "Sep 18, 2026",
+                status: "rejected"
+            }
+        ];
+
+        function showDemoWithdrawals() {
+
+            const body = document.getElementById("withdrawalsBody");
+
+            body.innerHTML = "";
+
+            demoWithdrawals.forEach((item, index) => {
+
+                const row = document.createElement("tr");
+
+                row.dataset.status = item.status;
+
+                row.innerHTML = `
+                <td>
+                    <div class="user-name">${item.name}</div>
+                    <div class="username">
+                        @${item.username}
+                    </div>
+                </td>
+
+                <td>
+                    <span class="amount">
+                        ${item.amount}
+                    </span>
+                </td>
+
+                <td>
+                    <div class="account">
+                        ${item.bank}<br>
+                        ${item.account}
+                    </div>
+                </td>
+
+                <td>${item.reference}</td>
+
+                <td>${item.date}</td>
+
+                <td>
+                    <span class="status ${item.status}">
+                        ${capitalize(item.status)}
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="action-btn view-btn"
+                            onclick="viewWithdrawal(${index})">
+                            View
+                        </button>
+
+                        <button
+                            class="action-btn approve-btn"
+                            onclick="approveWithdrawal(${index})">
+                            Approve
+                        </button>
+
+                        <button
+                            class="action-btn reject-btn"
+                            onclick="rejectWithdrawal(${index})">
+                            Reject
+                        </button>
+
+                    </div>
+                </td>
+            `;
+
+                body.appendChild(row);
+            });
+
+            document.getElementById("emptyState").style.display = "none";
+        }
+
+        function capitalize(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        function filterWithdrawals() {
+
+            const search =
+                document.getElementById("searchWithdrawal")
+                    .value
+                    .toLowerCase();
+
+            const status =
+                document.getElementById("statusFilter")
+                    .value;
+
+            const rows =
+                document.querySelectorAll("#withdrawalsBody tr");
+
+            let visible = 0;
+
+            rows.forEach(row => {
+
+                const text = row.textContent.toLowerCase();
+
+                const rowStatus =
+                    row.dataset.status;
+
+                const matchesSearch =
+                    text.includes(search);
+
+                const matchesStatus =
+                    status === "all" ||
+                    rowStatus === status;
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = "";
+                    visible++;
+                } else {
+                    row.style.display = "none";
+                }
+
+            });
+
+            document.getElementById("emptyState").style.display =
+                visible === 0 ? "block" : "none";
+        }
+
+        function viewWithdrawal(index) {
+
+            const item = demoWithdrawals[index];
+
+            alert(
+                "WITHDRAWAL DETAILS - DEMO\n\n" +
+                "User: @" + item.username + "\n" +
+                "Email: " + item.email + "\n" +
+                "Amount: " + item.amount + "\n" +
+                "Bank: " + item.bank + "\n" +
+                "Account: " + item.account + "\n" +
+                "Reference: " + item.reference + "\n" +
+                "Date: " + item.date + "\n" +
+                "Status: " + capitalize(item.status)
+            );
+        }
+
+        function approveWithdrawal(index) {
+
+            const item = demoWithdrawals[index];
+
+            alert(
+                "Approval for " +
+                item.reference +
+                " is disabled in demo mode."
+            );
+        }
+
+        function rejectWithdrawal(index) {
+
+            const item = demoWithdrawals[index];
+
+            alert(
+                "Rejection for " +
+                item.reference +
+                " is disabled in demo mode."
+            );
+        }
+
+        function adminLogout() {
+
+            localStorage.removeItem("pennyAdminLoggedIn");
+            localStorage.removeItem("pennyAdminUser");
+
+            window.location.replace("../admin-login.html");
+        }
+
+        showDemoWithdrawals();
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Transactions - Penny</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 21px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .menu-btn {
+            border: none;
+            background: #1677ff;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 9px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 240px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, .07);
+            padding: 18px 12px;
+            overflow-y: auto;
+            transform: translateX(0);
+            transition: .3s;
+            z-index: 90;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #344054;
+            padding: 13px 14px;
+            margin-bottom: 5px;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        main {
+            margin-left: 240px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .page-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #667085;
+            margin-bottom: 25px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+        }
+
+        .card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .table-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .table-header h2 {
+            font-size: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter {
+            padding: 10px 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th,
+        td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #eaecf0;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475467;
+        }
+
+        .credit {
+            color: #087443;
+            font-weight: bold;
+        }
+
+        .debit {
+            color: #b42318;
+            font-weight: bold;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .completed,
+        .approved {
+            background: #dff8e8;
+            color: #137333;
+        }
+
+        .pending {
+            background: #fff4cc;
+            color: #946200;
+        }
+
+        .rejected {
+            background: #ffe2e2;
+            color: #b42318;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #667085;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            background: #eef6ff;
+            border-left: 4px solid #1677ff;
+            padding: 15px;
+            border-radius: 8px;
+            color: #475467;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-left: 240px;
+            text-align: center;
+            padding: 20px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media(max-width:900px) {
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+            footer {
+                margin-left: 0;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filter {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo-area">
+            <img src="./images/penny1.jpg" class="logo" alt="Penny">
+            <div class="logo-text">Penny</div>
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="earnings.html">My Earnings</a>
+        <a href="daily-bonus.html">Daily Bonus</a>
+        <a href="withdraw.html">Withdraw</a>
+        <a href="withdrawals.html">Withdrawal History</a>
+        <a href="transactions.html" class="active">Transactions</a>
+        <a href="referral.html">Referral</a>
+        <a href="referrals.html">Referral History</a>
+        <a href="profile.html">Profile</a>
+        <a href="settings.html">Settings</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="#" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main>
+
+        <h1 class="page-title">Transactions</h1>
+
+        <p class="page-subtitle">
+            View your credits, debits, withdrawals and other account activity.
+        </p>
+
+
+        <section class="summary">
+
+            <div class="card">
+                <h3>Total Transactions</h3>
+                <div class="number" id="totalTransactions">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Credits</h3>
+                <div class="number" id="totalCredits">₦0.00</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Debits</h3>
+                <div class="number" id="totalDebits">₦0.00</div>
+            </div>
+
+            <div class="card">
+                <h3>Pending</h3>
+                <div class="number" id="pendingTransactions">0</div>
+            </div>
+
+        </section>
+
+
+        <section class="table-card">
+
+            <div class="table-header">
+
+                <h2>Transaction History</h2>
+
+                <div class="filters">
+
+                    <select id="typeFilter" class="filter" onchange="renderTransactions()">
+
+                        <option value="all">All Types</option>
+                        <option value="credit">Credits</option>
+                        <option value="debit">Debits</option>
+
+                    </select>
+
+
+                    <select id="statusFilter" class="filter" onchange="renderTransactions()">
+
+                        <option value="all">All Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Rejected">Rejected</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="transactionContent"></div>
+
+        </section>
+
+
+        <div class="notice">
+
+            <strong>Demo Mode:</strong>
+            Transactions are currently stored in your browser using
+            localStorage. A secure database will be required for a real
+            multi-user system.
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+
+    <script>
+
+        function toggleMenu() {
+
+            document.getElementById("sidebar").classList.toggle("open");
+
+        }
+
+
+        function getTransactions() {
+
+            try {
+
+                const saved =
+                    localStorage.getItem("pennyTransactions");
+
+                if (!saved) {
+                    return [];
+                }
+
+                const data = JSON.parse(saved);
+
+                return Array.isArray(data) ? data : [];
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        function formatMoney(amount) {
+
+            const value = Number(amount) || 0;
+
+            return "₦" + value.toLocaleString("en-NG", {
+
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+
+            });
+
+        }
+
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        function getStatusClass(status) {
+
+            const value = String(status || "Pending").toLowerCase();
+
+            if (value === "completed") {
+                return "completed";
+            }
+
+            if (value === "approved") {
+                return "approved";
+            }
+
+            if (value === "rejected") {
+                return "rejected";
+            }
+
+            return "pending";
+
+        }
+
+
+        function renderTransactions() {
+
+            const transactions = getTransactions();
+
+            const typeFilter =
+                document.getElementById("typeFilter").value;
+
+            const statusFilter =
+                document.getElementById("statusFilter").value;
+
+
+            document.getElementById("totalTransactions").textContent =
+                transactions.length;
+
+
+            const totalCredits = transactions.reduce(function (sum, item) {
+
+                if (String(item.type).toLowerCase() === "credit") {
+
+                    return sum + (Number(item.amount) || 0);
+
+                }
+
+                return sum;
+
+            }, 0);
+
+
+            const totalDebits = transactions.reduce(function (sum, item) {
+
+                if (String(item.type).toLowerCase() === "debit") {
+
+                    return sum + (Number(item.amount) || 0);
+
+                }
+
+                return sum;
+
+            }, 0);
+
+
+            const pending = transactions.filter(function (item) {
+
+                return String(item.status || "").toLowerCase() === "pending";
+
+            }).length;
+
+
+            document.getElementById("totalCredits").textContent =
+                formatMoney(totalCredits);
+
+
+            document.getElementById("totalDebits").textContent =
+                formatMoney(totalDebits);
+
+
+            document.getElementById("pendingTransactions").textContent =
+                pending;
+
+
+            const filtered = transactions.filter(function (item) {
+
+                const typeMatches =
+                    typeFilter === "all" ||
+                    String(item.type).toLowerCase() ===
+                    typeFilter.toLowerCase();
+
+
+                const statusMatches =
+                    statusFilter === "all" ||
+                    String(item.status || "").toLowerCase() ===
+                    statusFilter.toLowerCase();
+
+
+                return typeMatches && statusMatches;
+
+            });
+
+
+            const container =
+                document.getElementById("transactionContent");
+
+
+            if (filtered.length === 0) {
+
+                container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">📊</div>
+
+                <h3>No transactions found</h3>
+
+                <p>
+                    Your account transactions will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+                return;
+
+            }
+
+
+            const sorted = [...filtered].reverse();
+
+
+            let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+            sorted.forEach(function (item) {
+
+                const type =
+                    String(item.type || "credit").toLowerCase();
+
+                const amount =
+                    Number(item.amount) || 0;
+
+                const status =
+                    item.status || "Completed";
+
+
+                const amountText =
+                    type === "debit"
+                        ? "-" + formatMoney(amount)
+                        : "+" + formatMoney(amount);
+
+
+                html += `
+
+            <tr>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(
+                    item.description || "Transaction"
+                )}
+                    </strong>
+                </td>
+
+                <td>
+                    <span class="${type}">
+                        ${type === "debit" ? "Debit" : "Credit"}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="${type}">
+                        ${amountText}
+                    </span>
+                </td>
+
+                <td>
+                    ${escapeHTML(item.reference || item.id || "-")}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.date || "-")}
+                </td>
+
+                <td>
+
+                    <span class="status ${getStatusClass(status)}">
+                        ${escapeHTML(status)}
+                    </span>
+
+                </td>
+
+            </tr>
+
+        `;
+
+            });
+
+
+            html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+            container.innerHTML = html;
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("pennyUser");
+
+            window.location.replace("login.html");
+
+        }
+
+
+        renderTransactions();
+
+    </script>
+
+</body>
+
+</html>

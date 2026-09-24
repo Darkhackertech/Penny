@@ -1,0 +1,743 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Users Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #dce6f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-area span {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .menu-btn {
+            border: none;
+            background: #1677ff;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        aside {
+            width: 245px;
+            background: #ffffff;
+            border-right: 1px solid #dce6f0;
+            padding: 20px 12px;
+        }
+
+        .admin-label {
+            background: #eaf3ff;
+            color: #1677ff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 14px;
+            margin-bottom: 6px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #4c5a6a;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #eef6ff;
+            color: #1677ff;
+        }
+
+        .nav-link.active {
+            background: #1677ff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout-link {
+            color: #d62828;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+            max-width: 1400px;
+            margin: auto;
+            width: 100%;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .page-title p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-card small {
+            color: #718096;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-card strong {
+            font-size: 25px;
+            color: #1677ff;
+        }
+
+        .users-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+        }
+
+        .demo-btn {
+            border: none;
+            background: #1677ff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filters input,
+        .filters select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd8e5;
+            border-radius: 9px;
+            outline: none;
+            background: white;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #1677ff;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f7faff;
+            color: #526174;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .username {
+            color: #718096;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active {
+            background: #e5f8ed;
+            color: #16834b;
+        }
+
+        .pending {
+            background: #fff4d8;
+            color: #9a6a00;
+        }
+
+        .suspended {
+            background: #ffe7e7;
+            color: #c62828;
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .view-btn {
+            background: #eaf3ff;
+            color: #1677ff;
+        }
+
+        .suspend-btn {
+            background: #fff0f0;
+            color: #d62828;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #718096;
+        }
+
+        .empty-state .icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #eaf3ff;
+            color: #1677ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 27px;
+        }
+
+        .empty-state h3 {
+            color: #253044;
+            margin-bottom: 8px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #eef6ff;
+            border-left: 4px solid #1677ff;
+            color: #4b5c70;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #7a8795;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            aside {
+                position: fixed;
+                left: -260px;
+                top: 70px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+                transition: 0.3s;
+            }
+
+            aside.show {
+                left: 0;
+            }
+
+            main {
+                padding: 22px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0 15px;
+            }
+
+            .logo-area span {
+                font-size: 19px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card strong {
+                font-size: 21px;
+            }
+
+            .page-title h1 {
+                font-size: 25px;
+            }
+
+            .users-card {
+                padding: 15px;
+            }
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="../dashboard.html" class="logo-area">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+            <span>Penny Admin</span>
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <div class="layout">
+
+        <aside id="sidebar">
+
+            <div class="admin-label">
+                ADMIN PANEL
+            </div>
+
+            <a href="index.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="users.html" class="nav-link active">
+                Users
+            </a>
+
+            <a href="tasks.html" class="nav-link">
+                Tasks Management
+            </a>
+
+            <a href="withdrawals.html" class="nav-link">
+                Withdrawals
+            </a>
+
+            <a href="transactions.html" class="nav-link">
+                Transactions
+            </a>
+
+            <a href="referrals.html" class="nav-link">
+                Referrals
+            </a>
+
+            <a href="settings.html" class="nav-link">
+                Site Settings
+            </a>
+
+            <a href="../dashboard.html" class="nav-link">
+                User Dashboard
+            </a>
+
+            <a href="#" class="nav-link logout-link" onclick="adminLogout()">
+                Logout
+            </a>
+
+        </aside>
+
+        <main>
+
+            <div class="page-title">
+                <h1>Users Management</h1>
+                <p>View and manage Penny user accounts.</p>
+            </div>
+
+            <section class="stats">
+
+                <div class="stat-card">
+                    <small>Total Users</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>Active Users</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>Suspended Users</small>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <small>New Users</small>
+                    <strong>0</strong>
+                </div>
+
+            </section>
+
+            <section class="users-card">
+
+                <div class="card-header">
+                    <h2>All Users</h2>
+
+                    <button class="demo-btn" onclick="showDemoMessage()">
+                        + Add User
+                    </button>
+                </div>
+
+                <div class="filters">
+
+                    <input type="search" id="searchUser" placeholder="Search name, username or email..."
+                        oninput="filterUsers()">
+
+                    <select id="statusFilter" onchange="filterUsers()">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table id="usersTable">
+
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="usersBody">
+
+                            <!-- Demo users are hidden until demo mode is enabled -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="empty-state" id="emptyState">
+
+                    <div class="icon">👤</div>
+
+                    <h3>No users found</h3>
+
+                    <p>
+                        User accounts will appear here when the Penny
+                        database is connected.
+                    </p>
+
+                </div>
+
+                <div class="notice">
+                    <strong>Demo Mode:</strong>
+                    This page is currently a front-end admin interface.
+                    Real user accounts, passwords, balances, activities and
+                    account statuses should be loaded securely from a backend
+                    database. Passwords should never be displayed in the admin
+                    panel.
+                </div>
+
+            </section>
+
+            <footer>
+                © 2026 Penny. All rights reserved.
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script>
+
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("show");
+        }
+
+        function showDemoMessage() {
+            alert(
+                "Add User is currently in demo mode. " +
+                "A secure backend and database will be connected later."
+            );
+        }
+
+        const demoUsers = [
+            {
+                name: "Demo User One",
+                username: "demouser01",
+                email: "demo@example.com",
+                status: "active",
+                joined: "Sep 23, 2026"
+            },
+            {
+                name: "Demo User Two",
+                username: "demouser02",
+                email: "demo2@example.com",
+                status: "pending",
+                joined: "Sep 20, 2026"
+            },
+            {
+                name: "Demo User Three",
+                username: "demouser03",
+                email: "demo3@example.com",
+                status: "suspended",
+                joined: "Sep 18, 2026"
+            }
+        ];
+
+        function showDemoUsers() {
+
+            const body = document.getElementById("usersBody");
+
+            body.innerHTML = "";
+
+            demoUsers.forEach((user, index) => {
+
+                const row = document.createElement("tr");
+
+                row.setAttribute("data-status", user.status);
+
+                row.innerHTML = `
+                <td>
+                    <div class="user-name">${user.name}</div>
+                    <div class="username">@${user.username}</div>
+                </td>
+
+                <td>${user.email}</td>
+
+                <td>
+                    <span class="status ${user.status}">
+                        ${capitalize(user.status)}
+                    </span>
+                </td>
+
+                <td>${user.joined}</td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="action-btn view-btn"
+                            onclick="viewUser(${index})">
+                            View
+                        </button>
+
+                        <button
+                            class="action-btn suspend-btn"
+                            onclick="manageUser(${index})">
+                            Manage
+                        </button>
+
+                    </div>
+                </td>
+            `;
+
+                body.appendChild(row);
+            });
+
+            document.getElementById("emptyState").style.display = "none";
+        }
+
+        function capitalize(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        function filterUsers() {
+
+            const search =
+                document.getElementById("searchUser")
+                    .value
+                    .toLowerCase();
+
+            const status =
+                document.getElementById("statusFilter")
+                    .value;
+
+            const rows =
+                document.querySelectorAll("#usersBody tr");
+
+            let visible = 0;
+
+            rows.forEach(row => {
+
+                const text = row.textContent.toLowerCase();
+                const rowStatus = row.getAttribute("data-status");
+
+                const matchesSearch = text.includes(search);
+
+                const matchesStatus =
+                    status === "all" ||
+                    rowStatus === status;
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = "";
+                    visible++;
+                } else {
+                    row.style.display = "none";
+                }
+
+            });
+
+            document.getElementById("emptyState").style.display =
+                visible === 0 ? "block" : "none";
+        }
+
+        function viewUser(index) {
+
+            const user = demoUsers[index];
+
+            alert(
+                "DEMO USER\n\n" +
+                "Name: " + user.name + "\n" +
+                "Username: @" + user.username + "\n" +
+                "Email: " + user.email + "\n" +
+                "Status: " + capitalize(user.status) + "\n" +
+                "Joined: " + user.joined
+            );
+        }
+
+        function manageUser(index) {
+
+            const user = demoUsers[index];
+
+            alert(
+                "User management for @" +
+                user.username +
+                " will be connected to the backend later."
+            );
+        }
+
+        function adminLogout() {
+
+            localStorage.removeItem("pennyAdminLoggedIn");
+            localStorage.removeItem("pennyAdminUser");
+
+            window.location.replace("../admin-login.html");
+        }
+
+    </script>
+
+</body>
+
+</html>
+```

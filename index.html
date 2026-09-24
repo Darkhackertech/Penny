@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="./images/penny1.jpg">
+
+    <title>Penny - Earn. Complete. Grow.</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f9ff;
+            color: #172033;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+        header {
+            width: 100%;
+            background: white;
+            padding: 12px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* LOGO IMAGE SETTINGS */
+        .logo img {
+            width: 120px;
+            /* Change logo width here */
+            height: 45px;
+            /* Change logo height here */
+            object-fit: contain;
+            display: block;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #172033;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            color: #1677ff;
+        }
+
+        .login-btn {
+            background: #1677ff;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        /* =========================
+           HERO
+        ========================== */
+        .hero {
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 70px 8%;
+            background: linear-gradient(135deg, #eef6ff, #ffffff);
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-text h1 {
+            font-size: 52px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            color: #1677ff;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #596579;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            text-decoration: none;
+            padding: 14px 24px;
+            border-radius: 9px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .primary-btn {
+            background: #1677ff;
+            color: white;
+        }
+
+        .secondary-btn {
+            border: 1px solid #1677ff;
+            color: #1677ff;
+            background: white;
+        }
+
+        /* HERO CARD */
+        .hero-card {
+            width: 330px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-card h3 {
+            margin-bottom: 20px;
+        }
+
+        .balance {
+            background: #1677ff;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .balance small {
+            opacity: 0.8;
+        }
+
+        .balance h2 {
+            margin-top: 8px;
+            font-size: 30px;
+        }
+
+        .earning-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* =========================
+           FEATURES
+        ========================== */
+        .features {
+            padding: 70px 8%;
+            text-align: center;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .section-text {
+            color: #697386;
+            margin-bottom: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            background: #f7faff;
+            border-radius: 15px;
+            border: 1px solid #e6edf7;
+        }
+
+        .feature-icon {
+            width: 55px;
+            height: 55px;
+            background: #e8f2ff;
+            color: #1677ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #697386;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           HOW IT WORKS
+        ========================== */
+        .how {
+            padding: 70px 8%;
+            text-align: center;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .step {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .number {
+            width: 45px;
+            height: 45px;
+            margin: 0 auto 20px;
+            background: #1677ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+        footer {
+            background: #111827;
+            color: white;
+            padding: 40px 8% 20px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #aab3c2;
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+        @media (max-width: 768px) {
+
+            header {
+                padding: 10px 5%;
+            }
+
+            nav {
+                gap: 10px;
+            }
+
+            nav a:not(.login-btn) {
+                display: none;
+            }
+
+            .logo img {
+                width: 100px;
+                height: 40px;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 55px 5%;
+            }
+
+            .hero-text h1 {
+                font-size: 38px;
+            }
+
+            .hero-text p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .feature-grid,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+    <header>
+
+        <!--
+            LOGO IMAGE
+            Put your logo file in the same folder as this index.html.
+
+            Example:
+            logo.png
+
+            Then change "your-logo.png" below to your actual
+            logo filename.
+        -->
+        <div class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+        </div>
+
+        <nav>
+            <a href="contact.html">Contact</a>
+            <a href="about.html">About</a>
+            <a href="how-it-works.html">How It Works</a>
+            <a href="login.html" class="login-btn">Login</a>
+        </nav>
+
+    </header>
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <h1>
+                Turn Your Time Into
+                <span>Earnings.</span>
+            </h1>
+
+            <p>
+                Welcome to Penny — a simple platform where you can
+                complete tasks, earn rewards and grow your balance.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="register.html" class="primary-btn">
+                    Get Started
+                </a>
+
+                <a href="how-it-works.html" class="secondary-btn">
+                    How It Works
+                </a>
+            </div>
+
+        </div>
+
+
+        <div class="hero-card">
+
+            <h3>Your Penny Wallet</h3>
+
+            <div class="balance">
+                <small>Available Balance</small>
+                <h2>₦0.00</h2>
+            </div>
+
+            <div class="earning-row">
+                <span>Today's Earnings</span>
+                <strong>₦0.00</strong>
+            </div>
+
+            <div class="earning-row">
+                <span>Completed Tasks</span>
+                <strong>0</strong>
+            </div>
+
+            <div class="earning-row">
+                <span>Referrals</span>
+                <strong>0</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FEATURES
+    ========================== -->
+    <section class="features">
+
+        <h2 class="section-title">Ways to Earn</h2>
+
+        <p class="section-text">
+            Complete activities and build your Penny balance.
+        </p>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">₦</div>
+
+                <h3>Complete Tasks</h3>
+
+                <p>
+                    Complete available tasks and receive rewards
+                    when they are successfully completed.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">R</div>
+
+                <h3>Refer Friends</h3>
+
+                <p>
+                    Invite people to Penny and earn referral rewards
+                    according to the referral program.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">W</div>
+
+                <h3>Withdraw</h3>
+
+                <p>
+                    Request withdrawals when your balance reaches
+                    the applicable minimum.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================== -->
+    <section class="how">
+
+        <h2 class="section-title">How Penny Works</h2>
+
+        <p class="section-text">
+            Getting started is simple.
+        </p>
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="number">1</div>
+
+                <h3>Create an Account</h3>
+
+                <p>
+                    Register your Penny account and complete your
+                    profile.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="number">2</div>
+
+                <h3>Complete Tasks</h3>
+
+                <p>
+                    Find available tasks and complete the requirements.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="number">3</div>
+
+                <h3>Receive Rewards</h3>
+
+                <p>
+                    Approved rewards are added to your Penny balance.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer>
+
+        <p>Penny — Earn. Complete. Grow.</p>
+
+        <p>
+            © 2026 Penny. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

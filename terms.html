@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Penny - Terms & Conditions</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f9ff;
+            color: #172033;
+            line-height: 1.7;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e3ebf5;
+            padding: 10px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            max-width: 1150px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #24324a;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .menu a:hover {
+            color: #1677ff;
+        }
+
+        .login-btn {
+            background: #1677ff;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #e8f3ff, #ffffff);
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .hero h1 {
+            color: #1267d6;
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #647286;
+            max-width: 700px;
+            margin: auto;
+            font-size: 15px;
+        }
+
+        .terms-section {
+            max-width: 950px;
+            margin: auto;
+            padding: 55px 20px;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        .terms-card {
+            background: #ffffff;
+            border: 1px solid #dfe8f3;
+            border-radius: 14px;
+            padding: 35px;
+            box-shadow: 0 7px 24px rgba(20, 80, 150, 0.06);
+        }
+
+        .terms-card h2 {
+            color: #173b70;
+            font-size: 21px;
+            margin-top: 28px;
+            margin-bottom: 10px;
+        }
+
+        .terms-card h2:first-child {
+            margin-top: 0;
+        }
+
+        .terms-card p {
+            color: #647286;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .terms-card ul {
+            margin: 10px 0 15px 22px;
+            color: #647286;
+            font-size: 14px;
+        }
+
+        .terms-card li {
+            margin-bottom: 7px;
+        }
+
+        .important {
+            background: #eef6ff;
+            border-left: 4px solid #1677ff;
+            padding: 17px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .important p {
+            margin: 0;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #1267d6, #1677ff);
+            color: white;
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .cta h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .cta p {
+            color: #e6f1ff;
+            max-width: 650px;
+            margin: 0 auto 22px;
+        }
+
+        .cta a {
+            display: inline-block;
+            background: white;
+            color: #1267d6;
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #0d1b2e;
+            color: #aebbd0;
+            text-align: center;
+            padding: 25px 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 760px) {
+
+            header {
+                padding: 8px 15px;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .menu {
+                width: 100%;
+                justify-content: center;
+                gap: 9px;
+            }
+
+            .menu a {
+                font-size: 13px;
+            }
+
+            .login-btn {
+                padding: 8px 13px;
+            }
+
+            .hero {
+                padding: 50px 18px;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .terms-section {
+                padding: 35px 15px;
+            }
+
+            .terms-card {
+                padding: 22px 17px;
+            }
+
+            .terms-card h2 {
+                font-size: 19px;
+            }
+
+            .terms-card p,
+            .terms-card ul {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 400px) {
+
+            .logo img {
+                width: 110px;
+                height: 45px;
+            }
+
+            .menu {
+                gap: 7px;
+            }
+
+            .menu a {
+                font-size: 12px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav">
+
+            <a href="index.html" class="logo">
+                <img src="./images/penny1.jpg" alt="Penny Logo">
+            </a>
+
+            <nav class="menu">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html" class="login-btn">Login</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <h1>Terms & Conditions</h1>
+
+        <p>
+            Please read these terms carefully before using the Penny platform.
+        </p>
+
+    </section>
+
+
+    <!-- TERMS -->
+    <section class="terms-section">
+
+        <div class="last-updated">
+            Last Updated: September 2026
+        </div>
+
+
+        <div class="terms-card">
+
+            <div class="important">
+                <p>
+                    By creating an account or using Penny, you acknowledge
+                    that you have read and understood these terms and agree
+                    to follow the rules that apply to the platform.
+                </p>
+            </div>
+
+
+            <h2>1. About Penny</h2>
+
+            <p>
+                Penny is an online rewards platform designed to provide users
+                with access to activities, tasks and other opportunities that
+                may qualify for rewards according to the applicable requirements.
+            </p>
+
+
+            <h2>2. Creating an Account</h2>
+
+            <p>
+                You may be required to provide accurate information when
+                creating a Penny account.
+            </p>
+
+            <p>
+                You are responsible for keeping your account information
+                accurate and for protecting access to your account.
+            </p>
+
+            <p>
+                You should not knowingly provide false information or use
+                another person's account.
+            </p>
+
+
+            <h2>3. Eligibility</h2>
+
+            <p>
+                Certain activities may have specific eligibility requirements.
+                You should review the requirements of each activity before
+                participating.
+            </p>
+
+
+            <h2>4. Tasks and Activities</h2>
+
+            <p>
+                Penny may provide different activities or tasks from time
+                to time. Requirements, availability and reward amounts may
+                vary between activities.
+            </p>
+
+            <ul>
+                <li>Follow the instructions provided for each activity.</li>
+                <li>Submit genuine and accurate information.</li>
+                <li>Do not attempt to manipulate task results.</li>
+                <li>Do not use automated methods where they are prohibited.</li>
+            </ul>
+
+
+            <h2>5. Rewards</h2>
+
+            <p>
+                Completion of an activity does not automatically guarantee
+                that a reward will be approved. Some activities may require
+                review or verification.
+            </p>
+
+            <p>
+                Reward amounts and conditions may change depending on the
+                activity and the rules applicable at the time.
+            </p>
+
+
+            <h2>6. Withdrawals</h2>
+
+            <p>
+                Withdrawal options may be available when an account meets
+                the applicable requirements.
+            </p>
+
+            <p>
+                Minimum withdrawal amounts, processing times, available
+                payment methods and other conditions may vary.
+            </p>
+
+
+            <h2>7. Prohibited Activities</h2>
+
+            <p>
+                Users must not use Penny for fraudulent, abusive, illegal
+                or deceptive activities.
+            </p>
+
+            <ul>
+                <li>Attempting to manipulate rewards or transactions.</li>
+                <li>Using fraudulent account information.</li>
+                <li>Attempting unauthorized access to another account.</li>
+                <li>Interfering with the operation of the platform.</li>
+                <li>Using the platform for unlawful purposes.</li>
+            </ul>
+
+
+            <h2>8. Account Suspension</h2>
+
+            <p>
+                An account may be restricted, suspended or closed if there
+                is a violation of applicable platform rules or if activity
+                associated with the account requires investigation.
+            </p>
+
+
+            <h2>9. No Guaranteed Income</h2>
+
+            <p>
+                Penny does not guarantee a specific amount of earnings.
+                Results can depend on available activities, eligibility,
+                completion requirements, approval decisions and other
+                applicable conditions.
+            </p>
+
+
+            <h2>10. Platform Availability</h2>
+
+            <p>
+                Penny may occasionally be unavailable because of maintenance,
+                technical issues, updates or circumstances outside the
+                platform's control.
+            </p>
+
+
+            <h2>11. Changes to These Terms</h2>
+
+            <p>
+                These terms may be updated from time to time. Updated terms
+                may become applicable when they are published on the platform.
+            </p>
+
+
+            <h2>12. Contact</h2>
+
+            <p>
+                If you have questions about these terms, please use the
+                Penny contact page to reach support.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+    <section class="cta">
+
+        <h2>Have Questions?</h2>
+
+        <p>
+            If anything in these terms is unclear, contact Penny support
+            before using the platform.
+        </p>
+
+        <a href="contact.html">Contact Us</a>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+</body>
+
+</html>

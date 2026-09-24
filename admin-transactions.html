@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Transactions Management - Penny Admin</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 21px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .admin-label {
+            font-size: 12px;
+            background: #eaf3ff;
+            color: #1677ff;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            border: none;
+            background: #1677ff;
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 9px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 240px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, .07);
+            padding: 18px 12px;
+            overflow-y: auto;
+            transition: .3s;
+            z-index: 90;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #344054;
+            padding: 13px 14px;
+            margin-bottom: 5px;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        main {
+            margin-left: 240px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .page-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #667085;
+            margin-bottom: 25px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+        }
+
+        .card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .number {
+            color: #1677ff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .table-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .table-header h2 {
+            font-size: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search,
+        .filter {
+            padding: 10px 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+        }
+
+        .search {
+            width: 220px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        th,
+        td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #eaecf0;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475467;
+        }
+
+        .credit {
+            color: #087443;
+            font-weight: bold;
+        }
+
+        .debit {
+            color: #b42318;
+            font-weight: bold;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .completed,
+        .approved {
+            background: #dff8e8;
+            color: #137333;
+        }
+
+        .pending {
+            background: #fff4cc;
+            color: #946200;
+        }
+
+        .rejected {
+            background: #ffe2e2;
+            color: #b42318;
+        }
+
+        .view-btn {
+            border: none;
+            background: #eef6ff;
+            color: #1677ff;
+            padding: 8px 11px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #667085;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            background: #fff8e6;
+            border-left: 4px solid #f0a500;
+            padding: 15px;
+            border-radius: 8px;
+            color: #475467;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-left: 240px;
+            padding: 20px;
+            text-align: center;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media(max-width:1000px) {
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+            footer {
+                margin-left: 0;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search,
+            .filter {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo-area">
+
+            <img src="./images/penny1.jpg" class="logo" alt="Penny">
+
+            <div class="logo-text">Penny</div>
+
+            <span class="admin-label">ADMIN</span>
+
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="index.html">Dashboard</a>
+
+        <a href="users.html">Users</a>
+
+        <a href="tasks.html">Tasks Management</a>
+
+        <a href="withdrawals.html">Withdrawals</a>
+
+        <a href="transactions.html" class="active">
+            Transactions
+        </a>
+
+        <a href="referrals.html">Referrals</a>
+
+        <a href="settings.html">Site Settings</a>
+
+        <a href="../dashboard.html">User Dashboard</a>
+
+        <a href="#" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main>
+
+        <h1 class="page-title">
+            Transactions Management
+        </h1>
+
+        <p class="page-subtitle">
+            Monitor all credits, debits, withdrawals, rewards and refunds.
+        </p>
+
+
+        <section class="summary">
+
+            <div class="card">
+                <h3>Total Transactions</h3>
+                <div class="number" id="totalTransactions">0</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Credits</h3>
+                <div class="number" id="totalCredits">₦0.00</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Debits</h3>
+                <div class="number" id="totalDebits">₦0.00</div>
+            </div>
+
+            <div class="card">
+                <h3>Pending</h3>
+                <div class="number" id="pendingTransactions">0</div>
+            </div>
+
+        </section>
+
+
+        <section class="table-card">
+
+            <div class="table-header">
+
+                <h2>All Transactions</h2>
+
+                <div class="filters">
+
+                    <input type="search" id="search" class="search" placeholder="Search transaction..."
+                        oninput="renderTransactions()">
+
+                    <select id="typeFilter" class="filter" onchange="renderTransactions()">
+                        <option value="all">All Types</option>
+                        <option value="credit">Credits</option>
+                        <option value="debit">Debits</option>
+                    </select>
+
+                    <select id="statusFilter" class="filter" onchange="renderTransactions()">
+                        <option value="all">All Status</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="transactionContent"></div>
+
+        </section>
+
+
+        <div class="notice">
+
+            <strong>Demo Mode:</strong>
+            Transaction records are currently stored in browser
+            localStorage. A secure backend/database will be required
+            for a real multi-user Penny platform.
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+
+
+        function getTransactions() {
+
+            try {
+
+                const saved =
+                    localStorage.getItem("pennyTransactions");
+
+                if (!saved) {
+                    return [];
+                }
+
+                const data = JSON.parse(saved);
+
+                return Array.isArray(data) ? data : [];
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        function formatMoney(amount) {
+
+            return "₦" + (Number(amount) || 0)
+                .toLocaleString("en-NG", {
+
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+
+                });
+
+        }
+
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        function getStatusClass(status) {
+
+            const value =
+                String(status || "Pending").toLowerCase();
+
+            if (value === "completed") {
+                return "completed";
+            }
+
+            if (value === "approved") {
+                return "approved";
+            }
+
+            if (value === "rejected") {
+                return "rejected";
+            }
+
+            return "pending";
+
+        }
+
+
+        function renderTransactions() {
+
+            const transactions = getTransactions();
+
+
+            const search =
+                document
+                    .getElementById("search")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+
+            const typeFilter =
+                document.getElementById("typeFilter").value;
+
+
+            const statusFilter =
+                document.getElementById("statusFilter").value;
+
+
+            /*
+               SUMMARY
+            */
+
+            document.getElementById("totalTransactions").textContent =
+                transactions.length;
+
+
+            const credits = transactions.reduce(function (sum, item) {
+
+                if (
+                    String(item.type || "")
+                        .toLowerCase() === "credit"
+                ) {
+
+                    return sum + (Number(item.amount) || 0);
+
+                }
+
+                return sum;
+
+            }, 0);
+
+
+            const debits = transactions.reduce(function (sum, item) {
+
+                if (
+                    String(item.type || "")
+                        .toLowerCase() === "debit"
+                ) {
+
+                    return sum + (Number(item.amount) || 0);
+
+                }
+
+                return sum;
+
+            }, 0);
+
+
+            const pending = transactions.filter(function (item) {
+
+                return String(item.status || "")
+                    .toLowerCase() === "pending";
+
+            }).length;
+
+
+            document.getElementById("totalCredits").textContent =
+                formatMoney(credits);
+
+
+            document.getElementById("totalDebits").textContent =
+                formatMoney(debits);
+
+
+            document.getElementById("pendingTransactions").textContent =
+                pending;
+
+
+            /*
+               FILTERING
+            */
+
+            const filtered = transactions.filter(function (item) {
+
+                const searchableText = (
+
+                    (item.description || "") + " " +
+                    (item.reference || "") + " " +
+                    (item.id || "") + " " +
+                    (item.type || "") + " " +
+                    (item.status || "")
+
+                ).toLowerCase();
+
+
+                const matchesSearch =
+                    !search ||
+                    searchableText.includes(search);
+
+
+                const matchesType =
+                    typeFilter === "all" ||
+                    String(item.type || "")
+                        .toLowerCase() ===
+                    typeFilter.toLowerCase();
+
+
+                const matchesStatus =
+                    statusFilter === "all" ||
+                    String(item.status || "")
+                        .toLowerCase() ===
+                    statusFilter.toLowerCase();
+
+
+                return (
+                    matchesSearch &&
+                    matchesType &&
+                    matchesStatus
+                );
+
+            });
+
+
+            const container =
+                document.getElementById("transactionContent");
+
+
+            if (filtered.length === 0) {
+
+                container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">📊</div>
+
+                <h3>No transactions found</h3>
+
+                <p>
+                    Transactions will appear here automatically.
+                </p>
+
+            </div>
+
+        `;
+
+                return;
+
+            }
+
+
+            const sorted = [...filtered].sort(function (a, b) {
+
+                return (
+                    Number(b.timestamp || 0) -
+                    Number(a.timestamp || 0)
+                );
+
+            });
+
+
+            let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+            sorted.forEach(function (item) {
+
+                const type =
+                    String(item.type || "credit").toLowerCase();
+
+
+                const status =
+                    item.status || "Completed";
+
+
+                const amount =
+                    Number(item.amount) || 0;
+
+
+                const amountText =
+                    type === "debit"
+                        ? "-" + formatMoney(amount)
+                        : "+" + formatMoney(amount);
+
+
+                html += `
+
+            <tr>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(
+                    item.description ||
+                    "Transaction"
+                )}
+                    </strong>
+                </td>
+
+                <td>
+
+                    <span class="${type}">
+                        ${type === "debit"
+                        ? "Debit"
+                        : "Credit"
+                    }
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span class="${type}">
+                        ${amountText}
+                    </span>
+
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        item.reference ||
+                        item.id ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        item.date ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <span
+                        class="status ${getStatusClass(status)}"
+                    >
+                        ${escapeHTML(status)}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="view-btn"
+                        onclick="viewTransaction(${transactions.indexOf(item)})"
+                    >
+                        View
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+            });
+
+
+            html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+            container.innerHTML = html;
+
+        }
+
+
+        function viewTransaction(index) {
+
+            const transactions =
+                getTransactions();
+
+
+            const item =
+                transactions[index];
+
+
+            if (!item) {
+                return;
+            }
+
+
+            alert(
+
+                "Transaction Details\n\n" +
+
+                "Description: " +
+                (item.description || "-") +
+
+                "\nType: " +
+                (item.type || "-") +
+
+                "\nAmount: " +
+                formatMoney(item.amount) +
+
+                "\nReference: " +
+                (item.reference || item.id || "-") +
+
+                "\nStatus: " +
+                (item.status || "-") +
+
+                "\nDate: " +
+                (item.date || "-")
+
+            );
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem(
+                "pennyAdminLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "pennyAdminUser"
+            );
+
+            window.location.replace(
+                "../admin-login.html"
+            );
+
+        }
+
+
+        renderTransactions();
+
+    </script>
+
+</body>
+
+</html>

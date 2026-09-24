@@ -1,0 +1,822 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Task Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            height: 70px;
+            background: #fff;
+            border-bottom: 1px solid #dce6f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-area span {
+            color: #1677ff;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        aside {
+            width: 245px;
+            background: #fff;
+            border-right: 1px solid #dce6f0;
+            padding: 20px 12px;
+        }
+
+        .admin-label {
+            background: #eaf3ff;
+            color: #1677ff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 13px 14px;
+            margin-bottom: 6px;
+            border-radius: 10px;
+            color: #4c5a6a;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: #eef6ff;
+            color: #1677ff;
+        }
+
+        .nav-link.active {
+            background: #1677ff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .logout-link {
+            color: #d62828;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .page-title p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-card small {
+            display: block;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .stat-card strong {
+            color: #1677ff;
+            font-size: 25px;
+        }
+
+        .tasks-card {
+            background: white;
+            border: 1px solid #dce6f0;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+        }
+
+        .add-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 180px 180px;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filters input,
+        .filters select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd8e5;
+            border-radius: 9px;
+            outline: none;
+            background: white;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #1677ff;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f7faff;
+            color: #526174;
+        }
+
+        .task-name {
+            font-weight: bold;
+            color: #253044;
+        }
+
+        .task-description {
+            color: #718096;
+            font-size: 12px;
+            margin-top: 4px;
+            max-width: 260px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #e5f8ed;
+            color: #16834b;
+        }
+
+        .draft {
+            background: #edf1f5;
+            color: #667586;
+        }
+
+        .disabled {
+            background: #ffe7e7;
+            color: #c62828;
+        }
+
+        .easy {
+            background: #eaf3ff;
+            color: #1677ff;
+        }
+
+        .medium {
+            background: #fff4d8;
+            color: #9a6a00;
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            border: 0;
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background: #eaf3ff;
+            color: #1677ff;
+        }
+
+        .delete-btn {
+            background: #fff0f0;
+            color: #d62828;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #718096;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            background: #eaf3ff;
+            color: #1677ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto auto 15px;
+            font-size: 27px;
+        }
+
+        .empty-state h3 {
+            color: #253044;
+            margin-bottom: 8px;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef6ff;
+            border-left: 4px solid #1677ff;
+            border-radius: 10px;
+            color: #4b5c70;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #7a8795;
+            font-size: 13px;
+        }
+
+        @media (max-width: 950px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            aside {
+                position: fixed;
+                top: 70px;
+                left: -260px;
+                height: calc(100vh - 70px);
+                z-index: 999;
+                transition: 0.3s;
+            }
+
+            aside.show {
+                left: 0;
+            }
+
+            main {
+                padding: 22px 16px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filters input {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0 15px;
+            }
+
+            .logo-area span {
+                font-size: 19px;
+            }
+
+            .page-title h1 {
+                font-size: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-card strong {
+                font-size: 21px;
+            }
+
+            .tasks-card {
+                padding: 15px;
+            }
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .filters input {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <a href="../dashboard.html" class="logo-area">
+        <img src="./images/penny1.jpg" alt="Penny Logo">
+        <span>Penny Admin</span>
+    </a>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+</header>
+
+<div class="layout">
+
+    <aside id="sidebar">
+
+        <div class="admin-label">
+            ADMIN PANEL
+        </div>
+
+        <a href="index.html" class="nav-link">
+            Dashboard
+        </a>
+
+        <a href="users.html" class="nav-link">
+            Users
+        </a>
+
+        <a href="tasks.html" class="nav-link active">
+            Tasks Management
+        </a>
+
+        <a href="withdrawals.html" class="nav-link">
+            Withdrawals
+        </a>
+
+        <a href="transactions.html" class="nav-link">
+            Transactions
+        </a>
+
+        <a href="referrals.html" class="nav-link">
+            Referrals
+        </a>
+
+        <a href="settings.html" class="nav-link">
+            Site Settings
+        </a>
+
+        <a href="../dashboard.html" class="nav-link">
+            User Dashboard
+        </a>
+
+        <a href="#" class="nav-link logout-link" onclick="adminLogout()">
+            Logout
+        </a>
+
+    </aside>
+
+    <main>
+
+        <div class="page-title">
+            <h1>Task Management</h1>
+            <p>Create, manage and monitor Penny tasks.</p>
+        </div>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <small>Total Tasks</small>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <small>Active Tasks</small>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <small>Draft Tasks</small>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <small>Completed Tasks</small>
+                <strong>0</strong>
+            </div>
+
+        </section>
+
+        <section class="tasks-card">
+
+            <div class="card-header">
+
+                <h2>All Tasks</h2>
+
+                <button class="add-btn" onclick="addTask()">
+                    + Add Task
+                </button>
+
+            </div>
+
+            <div class="filters">
+
+                <input
+                    type="search"
+                    id="searchTask"
+                    placeholder="Search task name or description..."
+                    oninput="filterTasks()"
+                >
+
+                <select id="categoryFilter" onchange="filterTasks()">
+                    <option value="all">All Categories</option>
+                    <option value="Website">Website</option>
+                    <option value="Survey">Survey</option>
+                    <option value="Social">Social</option>
+                    <option value="App">App</option>
+                </select>
+
+                <select id="taskStatusFilter" onchange="filterTasks()">
+                    <option value="all">All Status</option>
+                    <option value="available">Available</option>
+                    <option value="draft">Draft</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Category</th>
+                            <th>Reward</th>
+                            <th>Difficulty</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tasksBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="empty-state" id="emptyState">
+
+                <div class="empty-icon">
+                    ✓
+                </div>
+
+                <h3>No tasks found</h3>
+
+                <p>
+                    Tasks will appear here when they are created
+                    and connected to the Penny backend.
+                </p>
+
+            </div>
+
+            <div class="notice">
+                <strong>Demo Mode:</strong>
+                Task creation, task rewards, completion tracking,
+                approval and user earnings are not connected to a
+                real database yet. The examples on this page are
+                demonstration data only.
+            </div>
+
+        </section>
+
+        <footer>
+            © 2026 Penny. All rights reserved.
+        </footer>
+
+    </main>
+
+</div>
+
+<script>
+
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+
+    const demoTasks = [
+        {
+            name: "Website Visit",
+            description: "Visit an assigned website and remain on the page for the required time.",
+            category: "Website",
+            reward: "₦500",
+            difficulty: "easy",
+            status: "available"
+        },
+        {
+            name: "Quick Survey",
+            description: "Complete a short online survey and submit your answers.",
+            category: "Survey",
+            reward: "₦750",
+            difficulty: "medium",
+            status: "available"
+        },
+        {
+            name: "Social Activity",
+            description: "Complete an approved social-media activity.",
+            category: "Social",
+            reward: "₦300",
+            difficulty: "easy",
+            status: "draft"
+        },
+        {
+            name: "App Activity",
+            description: "Complete an assigned application-based activity.",
+            category: "App",
+            reward: "₦1,000",
+            difficulty: "medium",
+            status: "disabled"
+        }
+    ];
+
+    function showDemoTasks() {
+
+        const body = document.getElementById("tasksBody");
+
+        body.innerHTML = "";
+
+        demoTasks.forEach((task, index) => {
+
+            const row = document.createElement("tr");
+
+            row.dataset.category = task.category;
+            row.dataset.status = task.status;
+
+            row.innerHTML = `
+                <td>
+                    <div class="task-name">${task.name}</div>
+                    <div class="task-description">
+                        ${task.description}
+                    </div>
+                </td>
+
+                <td>${task.category}</td>
+
+                <td>
+                    <strong>${task.reward}</strong>
+                </td>
+
+                <td>
+                    <span class="badge ${task.difficulty}">
+                        ${capitalize(task.difficulty)}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="badge ${task.status}">
+                        ${capitalize(task.status)}
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <button
+                            class="action-btn edit-btn"
+                            onclick="editTask(${index})">
+                            Edit
+                        </button>
+
+                        <button
+                            class="action-btn delete-btn"
+                            onclick="deleteTask(${index})">
+                            Delete
+                        </button>
+
+                    </div>
+                </td>
+            `;
+
+            body.appendChild(row);
+        });
+
+        document.getElementById("emptyState").style.display = "none";
+    }
+
+    function capitalize(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function filterTasks() {
+
+        const search =
+            document.getElementById("searchTask")
+            .value
+            .toLowerCase();
+
+        const category =
+            document.getElementById("categoryFilter")
+            .value;
+
+        const status =
+            document.getElementById("taskStatusFilter")
+            .value;
+
+        const rows =
+            document.querySelectorAll("#tasksBody tr");
+
+        let visible = 0;
+
+        rows.forEach(row => {
+
+            const text = row.textContent.toLowerCase();
+
+            const rowCategory =
+                row.dataset.category;
+
+            const rowStatus =
+                row.dataset.status;
+
+            const matchesSearch =
+                text.includes(search);
+
+            const matchesCategory =
+                category === "all" ||
+                rowCategory === category;
+
+            const matchesStatus =
+                status === "all" ||
+                rowStatus === status;
+
+            if (
+                matchesSearch &&
+                matchesCategory &&
+                matchesStatus
+            ) {
+                row.style.display = "";
+                visible++;
+            } else {
+                row.style.display = "none";
+            }
+
+        });
+
+        document.getElementById("emptyState").style.display =
+            visible === 0 ? "block" : "none";
+    }
+
+    function addTask() {
+
+        alert(
+            "Add Task is currently in demo mode.\n\n" +
+            "The real task creation system will be connected " +
+            "to the Penny backend and database later."
+        );
+    }
+
+    function editTask(index) {
+
+        const task = demoTasks[index];
+
+        alert(
+            "EDIT TASK - DEMO\n\n" +
+            "Task: " + task.name + "\n" +
+            "Category: " + task.category + "\n" +
+            "Reward: " + task.reward + "\n" +
+            "Status: " + capitalize(task.status)
+        );
+    }
+
+    function deleteTask(index) {
+
+        const task = demoTasks[index];
+
+        alert(
+            "Delete action for \"" +
+            task.name +
+            "\" is disabled in demo mode."
+        );
+    }
+
+    function adminLogout() {
+
+        localStorage.removeItem("pennyAdminLoggedIn");
+        localStorage.removeItem("pennyAdminUser");
+
+        window.location.replace("../admin-login.html");
+    }
+
+    showDemoTasks();
+
+</script>
+
+</body>
+</html>
+```

@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Penny - Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* HEADER */
+        .header {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e3eaf2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .menu-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: #087ff5;
+            color: #ffffff;
+            border-radius: 8px;
+            font-size: 23px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            right: -290px;
+            width: 290px;
+            height: calc(100vh - 70px);
+            background: #ffffff;
+            box-shadow: -5px 0 18px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: 0.3s;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar h3 {
+            color: #087ff5;
+            margin-bottom: 5px;
+        }
+
+        .admin-label {
+            color: #8a96a8;
+            font-size: 12px;
+            margin-bottom: 18px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 6px;
+            border-radius: 7px;
+            color: #25344d;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf4ff;
+            color: #087ff5;
+        }
+
+        .logout {
+            color: #e53935 !important;
+        }
+
+        /* MAIN */
+        .container {
+            width: 94%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            font-size: 30px;
+            color: #14213d;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        /* WELCOME */
+        .welcome {
+            background: linear-gradient(135deg, #087ff5, #54b4ff);
+            color: #ffffff;
+            border-radius: 15px;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2eaf3;
+            border-radius: 13px;
+            padding: 22px;
+        }
+
+        .stat-card span {
+            display: block;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .stat-card strong {
+            display: block;
+            color: #087ff5;
+            font-size: 27px;
+            margin-bottom: 7px;
+        }
+
+        .stat-card small {
+            color: #8a96a8;
+            font-size: 12px;
+        }
+
+        /* GRID */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2eaf3;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #e8edf3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 19px;
+        }
+
+        .view-link {
+            color: #087ff5;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* QUICK ACTIONS */
+        .actions {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .action {
+            padding: 17px;
+            border: 1px solid #e3eaf2;
+            border-radius: 9px;
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            border-color: #087ff5;
+            background: #f7fbff;
+        }
+
+        .action strong {
+            display: block;
+            color: #087ff5;
+            margin-bottom: 5px;
+        }
+
+        .action span {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* ACTIVITY */
+        .activity {
+            padding: 5px 20px;
+        }
+
+        .activity-item {
+            padding: 17px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .activity-item span {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        /* SYSTEM STATUS */
+        .status-list {
+            padding: 10px 20px 20px;
+        }
+
+        .system-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .system-status:last-child {
+            border-bottom: none;
+        }
+
+        .online {
+            background: #e7f8ee;
+            color: #16834b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .demo {
+            background: #fff4d8;
+            color: #a36b00;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* NOTICE */
+        .notice {
+            background: #fff8e6;
+            border-left: 4px solid #e0a500;
+            padding: 16px;
+            border-radius: 8px;
+            color: #6d5717;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #718096;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: 92%;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <a href="../dashboard.html" class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <h3>Penny Admin</h3>
+
+        <div class="admin-label">
+            Administration Panel
+        </div>
+
+        <a href="index.html" class="active">
+            Dashboard
+        </a>
+
+        <a href="users.html">
+            Users
+        </a>
+
+        <a href="tasks.html">
+            Tasks Management
+        </a>
+
+        <a href="withdrawals.html">
+            Withdrawals
+        </a>
+
+        <a href="transactions.html">
+            Transactions
+        </a>
+
+        <a href="referrals.html">
+            Referrals
+        </a>
+
+        <a href="settings.html">
+            Site Settings
+        </a>
+
+        <a href="../dashboard.html">
+            User Dashboard
+        </a>
+
+        <a href="#" class="logout" onclick="adminLogout()">
+            Logout
+        </a>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <h1 class="page-title">
+            Admin Dashboard
+        </h1>
+
+        <p class="subtitle">
+            Manage and monitor your Penny platform.
+        </p>
+
+        <!-- WELCOME -->
+        <section class="welcome">
+
+            <h1>
+                Welcome, Administrator
+            </h1>
+
+            <p>
+                This is the central control panel for Penny.
+                From here you can manage users, tasks, withdrawals,
+                transactions, referrals and site settings.
+            </p>
+
+        </section>
+
+        <!-- STATS -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <span>Total Users</span>
+                <strong>0</strong>
+                <small>Registered accounts</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Active Tasks</span>
+                <strong>0</strong>
+                <small>Available tasks</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Pending Withdrawals</span>
+                <strong>0</strong>
+                <small>Awaiting processing</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Total Earnings</span>
+                <strong>₦0.00</strong>
+                <small>Platform reward records</small>
+            </div>
+
+        </section>
+
+        <!-- DEMO NOTICE -->
+        <div class="notice">
+
+            <strong>Admin demo mode:</strong>
+            The statistics and activity shown on this dashboard are currently
+            placeholders. Once Penny is connected to a secure backend and
+            database, these figures will be loaded from real records.
+
+        </div>
+
+        <!-- CONTENT GRID -->
+        <section class="dashboard-grid">
+
+            <!-- QUICK ACTIONS -->
+            <div>
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+
+                    </div>
+
+                    <div class="actions">
+
+                        <a href="users.html" class="action">
+                            <strong>Manage Users</strong>
+                            <span>
+                                View and manage registered Penny accounts.
+                            </span>
+                        </a>
+
+                        <a href="tasks.html" class="action">
+                            <strong>Manage Tasks</strong>
+                            <span>
+                                Create and manage earning activities.
+                            </span>
+                        </a>
+
+                        <a href="withdrawals.html" class="action">
+                            <strong>Withdrawals</strong>
+                            <span>
+                                Review pending withdrawal requests.
+                            </span>
+                        </a>
+
+                        <a href="transactions.html" class="action">
+                            <strong>Transactions</strong>
+                            <span>
+                                Review platform transaction records.
+                            </span>
+                        </a>
+
+                        <a href="referrals.html" class="action">
+                            <strong>Referrals</strong>
+                            <span>
+                                Monitor referral activity and rewards.
+                            </span>
+                        </a>
+
+                        <a href="settings.html" class="action">
+                            <strong>Site Settings</strong>
+                            <span>
+                                Configure Penny platform settings.
+                            </span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- RECENT ACTIVITY -->
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Recent Activity
+                        </h2>
+
+                        <span class="view-link">
+                            Live data later
+                        </span>
+
+                    </div>
+
+                    <div class="activity">
+
+                        <div class="activity-item">
+
+                            <strong>
+                                No recent user activity
+                            </strong>
+
+                            <span>
+                                User activity will appear here after the
+                                database is connected.
+                            </span>
+
+                        </div>
+
+                        <div class="activity-item">
+
+                            <strong>
+                                No pending task activity
+                            </strong>
+
+                            <span>
+                                Task completion records will appear here.
+                            </span>
+
+                        </div>
+
+                        <div class="activity-item">
+
+                            <strong>
+                                No withdrawal activity
+                            </strong>
+
+                            <span>
+                                Withdrawal requests will appear here.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SYSTEM STATUS -->
+            <div>
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            System Status
+                        </h2>
+
+                    </div>
+
+                    <div class="status-list">
+
+                        <div class="system-status">
+
+                            <span>
+                                Admin Interface
+                            </span>
+
+                            <span class="online">
+                                Online
+                            </span>
+
+                        </div>
+
+                        <div class="system-status">
+
+                            <span>
+                                User Interface
+                            </span>
+
+                            <span class="online">
+                                Online
+                            </span>
+
+                        </div>
+
+                        <div class="system-status">
+
+                            <span>
+                                Database
+                            </span>
+
+                            <span class="demo">
+                                Not Connected
+                            </span>
+
+                        </div>
+
+                        <div class="system-status">
+
+                            <span>
+                                Authentication
+                            </span>
+
+                            <span class="demo">
+                                Demo Mode
+                            </span>
+
+                        </div>
+
+                        <div class="system-status">
+
+                            <span>
+                                Task System
+                            </span>
+
+                            <span class="demo">
+                                Demo Mode
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ADMIN ACCOUNT -->
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Admin Account
+                        </h2>
+
+                    </div>
+
+                    <div class="activity">
+
+                        <div class="activity-item">
+
+                            <strong id="adminUsername">
+                                Administrator
+                            </strong>
+
+                            <span>
+                                Current administrator
+                            </span>
+
+                        </div>
+
+                        <div class="activity-item">
+
+                            <strong>
+                                Admin Access
+                            </strong>
+
+                            <span>
+                                Full dashboard interface
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+    <script>
+
+        function toggleMenu() {
+            document
+                .getElementById("sidebar")
+                .classList
+                .toggle("active");
+        }
+
+        /*
+         * Temporary admin session.
+         * This is only for the current front-end demo.
+         */
+
+        if (
+            localStorage.getItem("pennyAdminLoggedIn") !== "true"
+        ) {
+
+            /*
+             * We are not forcing a redirect here so the admin
+             * interface can still be viewed while the project
+             * is being built.
+             */
+
+        }
+
+        function loadAdminUser() {
+
+            const adminUser =
+                localStorage.getItem("pennyAdminUser");
+
+            if (adminUser) {
+
+                document.getElementById("adminUsername")
+                    .textContent = adminUser;
+
+            }
+
+        }
+
+        function adminLogout() {
+
+            localStorage.removeItem(
+                "pennyAdminLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "pennyAdminUser"
+            );
+
+            window.location.replace(
+                "../admin-login.html"
+            );
+        }
+
+        loadAdminUser();
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Penny</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 21px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .admin-label {
+            font-size: 12px;
+            background: #eaf3ff;
+            color: #1677ff;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            border: none;
+            background: #1677ff;
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 9px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 240px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, .07);
+            padding: 18px 12px;
+            overflow-y: auto;
+            transition: .3s;
+            z-index: 90;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #344054;
+            padding: 13px 14px;
+            margin-bottom: 5px;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        main {
+            margin-left: 240px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .page-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #667085;
+            margin-bottom: 25px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+        }
+
+        .card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 25px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .quick {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .quick a {
+            text-decoration: none;
+            background: #fff;
+            color: #172033;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+            transition: .2s;
+        }
+
+        .quick a:hover {
+            transform: translateY(-3px);
+        }
+
+        .quick-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .quick-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .quick-text {
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .panel {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
+            margin-bottom: 20px;
+        }
+
+        .panel h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eaecf0;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            color: #475467;
+        }
+
+        .status-value {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #137333;
+        }
+
+        .warning {
+            color: #b54708;
+        }
+
+        .info {
+            color: #1677ff;
+        }
+
+        .notice {
+            background: #fff8e6;
+            border-left: 4px solid #f0a500;
+            padding: 15px;
+            border-radius: 8px;
+            color: #475467;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-left: 240px;
+            padding: 20px;
+            text-align: center;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media(max-width:1000px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+            footer {
+                margin-left: 0;
+            }
+
+            .stats,
+            .quick {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo-area">
+
+            <img src="./images/penny1.jpg" class="logo" alt="Penny">
+
+            <div class="logo-text">Penny</div>
+
+            <span class="admin-label">ADMIN</span>
+
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">
+            ☰
+        </button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="index.html" class="active">
+            Dashboard
+        </a>
+
+        <a href="users.html">
+            Users
+        </a>
+
+        <a href="tasks.html">
+            Tasks Management
+        </a>
+
+        <a href="withdrawals.html">
+            Withdrawals
+        </a>
+
+        <a href="transactions.html">
+            Transactions
+        </a>
+
+        <a href="referrals.html">
+            Referrals
+        </a>
+
+        <a href="settings.html">
+            Site Settings
+        </a>
+
+        <a href="../dashboard.html">
+            User Dashboard
+        </a>
+
+        <a href="#" onclick="logout()">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main>
+
+        <h1 class="page-title">
+            Admin Dashboard
+        </h1>
+
+        <p class="page-subtitle">
+            Overview of your Penny platform.
+        </p>
+
+
+        <section class="stats">
+
+            <div class="card">
+
+                <h3>Total Users</h3>
+
+                <div class="number" id="totalUsers">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Active Tasks</h3>
+
+                <div class="number" id="activeTasks">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Pending Withdrawals</h3>
+
+                <div class="number" id="pendingWithdrawals">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Total Transaction Credits</h3>
+
+                <div class="number" id="totalCredits">
+                    ₦0.00
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="quick">
+
+            <a href="withdrawals.html">
+
+                <div class="quick-icon">💳</div>
+
+                <div class="quick-title">
+                    Withdrawals
+                </div>
+
+                <div class="quick-text">
+                    Review withdrawal requests.
+                </div>
+
+            </a>
+
+
+            <a href="transactions.html">
+
+                <div class="quick-icon">📊</div>
+
+                <div class="quick-title">
+                    Transactions
+                </div>
+
+                <div class="quick-text">
+                    View account activity.
+                </div>
+
+            </a>
+
+
+            <a href="tasks.html">
+
+                <div class="quick-icon">📝</div>
+
+                <div class="quick-title">
+                    Tasks
+                </div>
+
+                <div class="quick-text">
+                    Manage available tasks.
+                </div>
+
+            </a>
+
+
+            <a href="users.html">
+
+                <div class="quick-icon">👥</div>
+
+                <div class="quick-title">
+                    Users
+                </div>
+
+                <div class="quick-text">
+                    Manage platform users.
+                </div>
+
+            </a>
+
+        </section>
+
+
+        <section class="panel">
+
+            <h2>
+                System Status
+            </h2>
+
+
+            <div class="status-row">
+
+                <span class="status-label">
+                    Frontend
+                </span>
+
+                <span class="status-value online">
+                    Online
+                </span>
+
+            </div>
+
+
+            <div class="status-row">
+
+                <span class="status-label">
+                    Authentication
+                </span>
+
+                <span class="status-value warning">
+                    Demo Mode
+                </span>
+
+            </div>
+
+
+            <div class="status-row">
+
+                <span class="status-label">
+                    Database
+                </span>
+
+                <span class="status-value warning">
+                    Not Connected
+                </span>
+
+            </div>
+
+
+            <div class="status-row">
+
+                <span class="status-label">
+                    Payment System
+                </span>
+
+                <span class="status-value warning">
+                    Not Connected
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <h2>
+                Important
+            </h2>
+
+            <div class="notice">
+
+                Penny is currently running as a
+                <strong>front-end demo</strong>.
+
+                Data such as balances, transactions and withdrawals
+                are stored in the browser's localStorage.
+
+                For a real platform with multiple users, the next stage
+                is to connect a secure backend database and authentication
+                system.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+
+
+        function getArray(key) {
+
+            try {
+
+                const saved =
+                    localStorage.getItem(key);
+
+                if (!saved) {
+                    return [];
+                }
+
+                const data =
+                    JSON.parse(saved);
+
+                return Array.isArray(data)
+                    ? data
+                    : [];
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        function formatMoney(amount) {
+
+            return "₦" + (Number(amount) || 0)
+                .toLocaleString("en-NG", {
+
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+
+                });
+
+        }
+
+
+        /*
+           USERS
+        
+           At the moment Penny stores only the current
+           browser user's information, so we cannot count
+           real platform users until a database is connected.
+        */
+
+        function loadUsers() {
+
+            const savedUser =
+                localStorage.getItem("pennyUser");
+
+            document.getElementById("totalUsers").textContent =
+                savedUser ? "1" : "0";
+
+        }
+
+
+        /*
+           TASKS
+        
+           These are the four currently available demo tasks.
+        */
+
+        function loadTasks() {
+
+            const tasks = [
+
+                {
+                    id: "task-website",
+                    status: "Available"
+                },
+
+                {
+                    id: "task-survey",
+                    status: "Available"
+                },
+
+                {
+                    id: "task-social",
+                    status: "Draft"
+                },
+
+                {
+                    id: "task-app",
+                    status: "Disabled"
+                }
+
+            ];
+
+
+            const active =
+                tasks.filter(function (task) {
+
+                    return task.status === "Available";
+
+                }).length;
+
+
+            document.getElementById("activeTasks").textContent =
+                active;
+
+        }
+
+
+        /*
+           WITHDRAWALS
+        */
+
+        function loadWithdrawals() {
+
+            const withdrawals =
+                getArray("pennyWithdrawals");
+
+
+            const pending =
+                withdrawals.filter(function (item) {
+
+                    return item.status === "Pending";
+
+                }).length;
+
+
+            document.getElementById(
+                "pendingWithdrawals"
+            ).textContent = pending;
+
+        }
+
+
+        /*
+           TRANSACTIONS
+        */
+
+        function loadTransactions() {
+
+            const transactions =
+                getArray("pennyTransactions");
+
+
+            const credits =
+                transactions.reduce(function (sum, item) {
+
+                    if (
+                        String(item.type || "")
+                            .toLowerCase() === "credit"
+                    ) {
+
+                        return sum +
+                            (Number(item.amount) || 0);
+
+                    }
+
+                    return sum;
+
+                }, 0);
+
+
+            document.getElementById(
+                "totalCredits"
+            ).textContent =
+                formatMoney(credits);
+
+        }
+
+
+        /*
+           INITIAL LOAD
+        */
+
+        function loadDashboard() {
+
+            loadUsers();
+
+            loadTasks();
+
+            loadWithdrawals();
+
+            loadTransactions();
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem(
+                "pennyAdminLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "pennyAdminUser"
+            );
+
+            window.location.replace(
+                "../admin-login.html"
+            );
+
+        }
+
+
+        loadDashboard();
+
+    </script>
+
+</body>
+
+</html>

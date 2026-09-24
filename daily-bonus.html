@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Daily Bonus</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1677ff;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 10px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 245px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            border-right: 1px solid #e4eaf3;
+            padding: 20px 12px;
+            overflow-y: auto;
+            transition: .3s;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #445066;
+            padding: 13px 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        .bonus-card {
+            background: white;
+            border: 1px solid #e4eaf3;
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .04);
+        }
+
+        .bonus-icon {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 18px;
+            background: #eaf3ff;
+            color: #1677ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        .bonus-card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .bonus-text {
+            color: #68758a;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .reward {
+            font-size: 38px;
+            font-weight: bold;
+            color: #078a42;
+            margin-bottom: 22px;
+        }
+
+        .claim-btn {
+            width: 100%;
+            max-width: 400px;
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 15px;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .claim-btn:hover {
+            background: #005bd8;
+        }
+
+        .claim-btn:disabled {
+            background: #9aa6b5;
+            cursor: not-allowed;
+        }
+
+        .balance-box {
+            margin-top: 20px;
+            background: #f8fbff;
+            border: 1px solid #e4eaf3;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .balance-box span {
+            display: block;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .balance {
+            color: #1677ff;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .message {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            background: #e7f8ee;
+            border: 1px solid #a7dfbd;
+            color: #176b3a;
+        }
+
+        .notice {
+            margin-top: 25px;
+            background: #fff8df;
+            border: 1px solid #f2df9b;
+            color: #765c00;
+            padding: 16px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            padding: 25px 10px;
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                left: -260px;
+                z-index: 99;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+        }
+
+        @media(max-width:450px) {
+
+            header {
+                padding: 0 12px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .logo img {
+                width: 36px;
+                height: 36px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .bonus-card {
+                padding: 22px 16px;
+            }
+
+            .reward {
+                font-size: 32px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <img src="./images/penny1.jpg" alt="Penny">
+            <span>Penny</span>
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="dashboard.html">Dashboard</a>
+
+        <a href="tasks.html">Tasks</a>
+
+        <a href="earnings.html">My Earnings</a>
+
+        <a href="daily-bonus.html" class="active">Daily Bonus</a>
+
+        <a href="withdraw.html">Withdraw</a>
+
+        <a href="withdrawals.html">Withdrawal History</a>
+
+        <a href="transactions.html">Transactions</a>
+
+        <a href="referral.html">Referral</a>
+
+        <a href="referrals.html">Referral History</a>
+
+        <a href="profile.html">Profile</a>
+
+        <a href="settings.html">Settings</a>
+
+        <a href="notifications.html">Notifications</a>
+
+        <a href="#" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="container">
+
+            <h1>Daily Bonus</h1>
+
+            <p class="subtitle">
+                Come back every day to claim your Penny bonus.
+            </p>
+
+
+            <div class="bonus-card">
+
+                <div class="bonus-icon">
+                    🎁
+                </div>
+
+                <h2>Today's Bonus</h2>
+
+                <p class="bonus-text">
+                    Claim your daily reward once every day.
+                </p>
+
+                <div class="reward">
+                    ₦100
+                </div>
+
+                <button class="claim-btn" id="claimButton">
+                    Claim ₦100 Bonus
+                </button>
+
+
+                <div class="balance-box">
+
+                    <span>Current Balance</span>
+
+                    <div class="balance" id="balance">
+                        ₦0.00
+                    </div>
+
+                </div>
+
+
+                <div class="message" id="message"></div>
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>Demo Mode:</strong>
+                The daily bonus is currently stored in your browser.
+                A real earning platform should process rewards through
+                a secure backend and database.
+
+            </div>
+
+        </div>
+
+
+        <footer>
+            © 2026 Penny. All rights reserved.
+        </footer>
+
+    </main>
+
+
+    <script>
+
+        const claimButton =
+            document.getElementById("claimButton");
+
+        const balanceDisplay =
+            document.getElementById("balance");
+
+        const message =
+            document.getElementById("message");
+
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+
+
+        function getToday() {
+
+            const date = new Date();
+
+            return date.getFullYear() +
+                "-" +
+                String(date.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(date.getDate()).padStart(2, "0");
+
+        }
+
+
+        function getBalance() {
+
+            return Number(
+                localStorage.getItem("pennyBalance") || 0
+            );
+
+        }
+
+
+        function formatMoney(amount) {
+
+            return "₦" + Number(amount).toLocaleString("en-NG", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+        }
+
+
+        function showBalance() {
+
+            balanceDisplay.textContent =
+                formatMoney(getBalance());
+
+        }
+
+
+        /* Get previous earnings */
+
+        function getEarnings() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem("pennyEarnings") || "[]"
+                );
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        /* Save bonus to earnings history */
+
+        function saveBonus() {
+
+            const earnings = getEarnings();
+
+            earnings.push({
+
+                name: "Daily Bonus",
+
+                amount: 100,
+
+                type: "bonus",
+
+                date: new Date().toLocaleString("en-NG")
+
+            });
+
+            localStorage.setItem(
+                "pennyEarnings",
+                JSON.stringify(earnings)
+            );
+
+        }
+
+
+        /* Check whether today's bonus was already claimed */
+
+        function checkBonus() {
+
+            const claimedDate =
+                localStorage.getItem("pennyDailyBonus");
+
+            if (claimedDate === getToday()) {
+
+                claimButton.textContent =
+                    "Bonus Claimed Today";
+
+                claimButton.disabled = true;
+
+            }
+
+        }
+
+
+        /* Claim bonus */
+
+        claimButton.addEventListener("click", function () {
+
+            const today = getToday();
+
+            const claimedDate =
+                localStorage.getItem("pennyDailyBonus");
+
+
+            if (claimedDate === today) {
+
+                return;
+
+            }
+
+
+            let balance = getBalance();
+
+            balance = balance + 100;
+
+
+            localStorage.setItem(
+                "pennyBalance",
+                balance
+            );
+
+
+            localStorage.setItem(
+                "pennyDailyBonus",
+                today
+            );
+
+
+            saveBonus();
+
+
+            claimButton.textContent =
+                "Bonus Claimed Today";
+
+            claimButton.disabled = true;
+
+
+            message.textContent =
+                "Congratulations! ₦100 has been added to your Penny balance.";
+
+
+            message.style.display = "block";
+
+
+            showBalance();
+
+        });
+
+
+        function logout() {
+
+            localStorage.removeItem("isLoggedIn");
+
+            localStorage.removeItem("pennyUser");
+
+            window.location.replace("login.html");
+
+        }
+
+
+        showBalance();
+
+        checkBonus();
+
+    </script>
+
+</body>
+
+</html>

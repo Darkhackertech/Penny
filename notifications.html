@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications - Penny</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f8ff;
+    color:#172033;
+}
+
+header{
+    height:70px;
+    background:#fff;
+    border-bottom:1px solid #dce7f5;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+.logo-text{
+    font-size:21px;
+    font-weight:800;
+    color:#1769e0;
+}
+
+.menu-btn{
+    background:#1769e0;
+    color:#fff;
+    border:none;
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    font-size:21px;
+    cursor:pointer;
+}
+
+.sidebar{
+    position:fixed;
+    top:70px;
+    left:0;
+    width:250px;
+    height:calc(100vh - 70px);
+    background:#fff;
+    border-right:1px solid #dce7f5;
+    padding:18px 12px;
+    overflow-y:auto;
+    transition:.3s;
+    z-index:90;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:#526071;
+    padding:13px 14px;
+    border-radius:10px;
+    margin-bottom:5px;
+    font-size:14px;
+}
+
+.sidebar a:hover{
+    background:#eef5ff;
+    color:#1769e0;
+}
+
+.sidebar a.active{
+    background:#1769e0;
+    color:#fff;
+    font-weight:bold;
+}
+
+.main{
+    margin-left:250px;
+    padding:28px;
+    max-width:1200px;
+}
+
+.page-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.page-title h1{
+    font-size:28px;
+    color:#13233a;
+}
+
+.page-title p{
+    margin-top:6px;
+    color:#718096;
+    font-size:14px;
+}
+
+.unread-badge{
+    background:#1769e0;
+    color:white;
+    padding:10px 15px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.notification-top{
+    background:#fff;
+    border:1px solid #dce7f5;
+    border-radius:15px;
+    padding:16px;
+    margin-bottom:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.filters{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.filter-btn{
+    border:1px solid #d5e2f2;
+    background:#fff;
+    color:#536276;
+    padding:9px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.filter-btn.active{
+    background:#1769e0;
+    color:#fff;
+    border-color:#1769e0;
+}
+
+.action-buttons{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.action-buttons button{
+    border:none;
+    padding:9px 13px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.read-all{
+    background:#eaf3ff;
+    color:#1769e0;
+}
+
+.clear-all{
+    background:#fff0f0;
+    color:#d33;
+}
+
+.notifications{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.notification{
+    background:#fff;
+    border:1px solid #dce7f5;
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    position:relative;
+    transition:.2s;
+}
+
+.notification:hover{
+    box-shadow:0 5px 18px rgba(23,105,224,.08);
+}
+
+.notification.unread{
+    border-left:4px solid #1769e0;
+    background:#fafdff;
+}
+
+.icon{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#eaf3ff;
+    color:#1769e0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    flex-shrink:0;
+}
+
+.icon.user{
+    background:#e9f9ef;
+    color:#159447;
+}
+
+.icon.task{
+    background:#fff6df;
+    color:#d48b00;
+}
+
+.icon.withdraw{
+    background:#f1ebff;
+    color:#7444d8;
+}
+
+.icon.security{
+    background:#ffecec;
+    color:#d33;
+}
+
+.notification-content{
+    flex:1;
+    min-width:0;
+}
+
+.notification-content h3{
+    font-size:15px;
+    margin-bottom:5px;
+}
+
+.notification-content p{
+    color:#66758a;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.time{
+    display:block;
+    color:#94a0af;
+    font-size:12px;
+    margin-top:8px;
+}
+
+.new-user{
+    margin-top:12px;
+    background:#f5f9ff;
+    border:1px solid #e0ebfa;
+    border-radius:10px;
+    padding:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.new-user-avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#1769e0;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+}
+
+.new-user-info{
+    flex:1;
+}
+
+.new-user-info strong{
+    display:block;
+    font-size:13px;
+}
+
+.new-user-info span{
+    display:block;
+    font-size:12px;
+    color:#7b8796;
+    margin-top:2px;
+}
+
+.online{
+    width:9px;
+    height:9px;
+    background:#20b55b;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:4px;
+}
+
+.notification-actions{
+    display:flex;
+    gap:6px;
+    margin-left:auto;
+}
+
+.small-btn{
+    border:1px solid #dce7f5;
+    background:#fff;
+    color:#607086;
+    border-radius:7px;
+    padding:6px 8px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.small-btn:hover{
+    background:#eef5ff;
+    color:#1769e0;
+}
+
+.empty{
+    background:#fff;
+    border:1px dashed #cbd9ea;
+    border-radius:15px;
+    padding:50px 20px;
+    text-align:center;
+    color:#748197;
+}
+
+.empty-icon{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+.notice{
+    margin-top:22px;
+    background:#fffbea;
+    border:1px solid #f1df9d;
+    border-radius:12px;
+    padding:15px;
+    color:#735d15;
+    font-size:13px;
+    line-height:1.6;
+}
+
+footer{
+    margin-left:250px;
+    background:#fff;
+    border-top:1px solid #dce7f5;
+    text-align:center;
+    padding:22px;
+    color:#7b8796;
+    font-size:13px;
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        transform:translateX(-100%);
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .main{
+        margin-left:0;
+        padding:20px 14px;
+    }
+
+    footer{
+        margin-left:0;
+    }
+
+    .page-title{
+        align-items:flex-start;
+    }
+
+    .page-title h1{
+        font-size:24px;
+    }
+
+    .notification{
+        padding:13px;
+    }
+}
+
+@media(max-width:480px){
+
+    header{
+        padding:0 13px;
+    }
+
+    .logo-text{
+        font-size:19px;
+    }
+
+    .page-title{
+        display:block;
+    }
+
+    .unread-badge{
+        display:inline-block;
+        margin-top:12px;
+    }
+
+    .notification-top{
+        padding:12px;
+    }
+
+    .action-buttons{
+        width:100%;
+    }
+
+    .action-buttons button{
+        flex:1;
+    }
+
+    .notification{
+        gap:10px;
+    }
+
+    .icon{
+        width:40px;
+        height:40px;
+        font-size:18px;
+    }
+
+    .notification-actions{
+        position:absolute;
+        right:10px;
+        top:10px;
+    }
+
+    .notification-content{
+        padding-right:45px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo-area">
+        <img src="./images/penny1.jpg" class="logo" alt="Penny">
+        <div class="logo-text">Penny</div>
+    </div>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</header>
+
+<aside class="sidebar" id="sidebar">
+
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="tasks.html">💼 Tasks</a>
+    <a href="earnings.html">💰 My Earnings</a>
+    <a href="daily-bonus.html">🎁 Daily Bonus</a>
+    <a href="withdraw.html">💳 Withdraw</a>
+    <a href="withdrawals.html">📋 Withdrawal History</a>
+    <a href="transactions.html">🔄 Transactions</a>
+    <a href="referral.html">👥 Referral</a>
+    <a href="referrals.html">📊 Referral History</a>
+    <a href="profile.html">👤 Profile</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="notifications.html" class="active">🔔 Notifications</a>
+    <a href="#" onclick="logout()">🚪 Logout</a>
+
+</aside>
+
+<main class="main">
+
+    <div class="page-title">
+        <div>
+            <h1>Notifications</h1>
+            <p>Stay updated with activity happening on Penny.</p>
+        </div>
+
+        <div class="unread-badge" id="unreadBadge">
+            0 Unread
+        </div>
+    </div>
+
+    <div class="notification-top">
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('all',this)">
+                All
+            </button>
+
+            <button class="filter-btn" onclick="setFilter('unread',this)">
+                Unread
+            </button>
+
+            <button class="filter-btn" onclick="setFilter('users',this)">
+                New Users
+            </button>
+
+            <button class="filter-btn" onclick="setFilter('system',this)">
+                System
+            </button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="read-all" onclick="markAllRead()">
+                Mark All Read
+            </button>
+
+            <button class="clear-all" onclick="clearAll()">
+                Clear All
+            </button>
+        </div>
+
+    </div>
+
+    <div class="notifications" id="notifications"></div>
+
+    <div class="notice">
+        <strong>Demo Mode:</strong>
+        New-user notifications are currently generated from Penny users
+        stored in this browser's localStorage. For a real website with
+        multiple users, the notification system should later use a shared
+        database and backend.
+    </div>
+
+</main>
+
+<footer>
+    © 2026 Penny. All rights reserved.
+</footer>
+
+<script>
+
+let currentFilter = "all";
+
+const NOTIFICATION_KEY = "pennyNotifications";
+
+/* ------------------------------
+   MENU
+------------------------------ */
+
+function toggleMenu(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
+
+/* ------------------------------
+   CURRENT USER
+------------------------------ */
+
+function getCurrentUser(){
+
+    const saved = localStorage.getItem("pennyUser");
+
+    if(!saved){
+        return null;
+    }
+
+    try{
+
+        const user = JSON.parse(saved);
+
+        if(typeof user === "object"){
+            return user;
+        }
+
+        return {
+            username:saved
+        };
+
+    }catch(error){
+
+        return {
+            username:saved
+        };
+
+    }
+}
+
+/* ------------------------------
+   NOTIFICATIONS
+------------------------------ */
+
+function getNotifications(){
+
+    try{
+
+        const saved = JSON.parse(
+            localStorage.getItem(NOTIFICATION_KEY) || "[]"
+        );
+
+        return Array.isArray(saved) ? saved : [];
+
+    }catch(error){
+
+        return [];
+
+    }
+}
+
+function saveNotifications(items){
+
+    localStorage.setItem(
+        NOTIFICATION_KEY,
+        JSON.stringify(items)
+    );
+}
+
+/* ------------------------------
+   CREATE NEW USER NOTIFICATION
+------------------------------ */
+
+function createNewUserNotification(){
+
+    const user = getCurrentUser();
+
+    if(!user){
+        return;
+    }
+
+    const username =
+        user.username ||
+        user.fullName ||
+        "New User";
+
+    const userId =
+        username.toLowerCase().replace(/[^a-z0-9]/g,"");
+
+    let notifications = getNotifications();
+
+    const alreadyExists = notifications.some(function(item){
+
+        return item.type === "user" &&
+               item.userId === userId;
+
+    });
+
+    if(alreadyExists){
+        return;
+    }
+
+    const notification = {
+
+        id:"new-user-" + Date.now(),
+
+        type:"user",
+
+        userId:userId,
+
+        title:"Welcome to Penny",
+
+        message:
+            "A new Penny member has joined the platform.",
+
+        username:username,
+
+        date:new Date().toLocaleString("en-NG"),
+
+        timestamp:Date.now(),
+
+        read:false
+
+    };
+
+    notifications.unshift(notification);
+
+    /*
+       Keep only the latest 50 notifications.
+    */
+
+    notifications = notifications.slice(0,50);
+
+    saveNotifications(notifications);
+}
+
+/* ------------------------------
+   DISPLAY
+------------------------------ */
+
+function renderNotifications(){
+
+    const container =
+        document.getElementById("notifications");
+
+    let notifications = getNotifications();
+
+    if(currentFilter === "unread"){
+
+        notifications = notifications.filter(
+            item => !item.read
+        );
+
+    }
+
+    if(currentFilter === "users"){
+
+        notifications = notifications.filter(
+            item => item.type === "user"
+        );
+
+    }
+
+    if(currentFilter === "system"){
+
+        notifications = notifications.filter(
+            item => item.type !== "user"
+        );
+
+    }
+
+    if(notifications.length === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🔔</div>
+                <h3>No notifications</h3>
+                <p>You don't have any notifications in this section.</p>
+            </div>
+        `;
+
+        updateUnreadCount();
+
+        return;
+    }
+
+    container.innerHTML = notifications.map(function(item){
+
+        let icon = "🔔";
+        let iconClass = "";
+
+        if(item.type === "user"){
+
+            icon = "👤";
+            iconClass = "user";
+
+        }else if(item.type === "task"){
+
+            icon = "💼";
+            iconClass = "task";
+
+        }else if(item.type === "withdraw"){
+
+            icon = "💳";
+            iconClass = "withdraw";
+
+        }else if(item.type === "security"){
+
+            icon = "🔐";
+            iconClass = "security";
+
+        }
+
+        let userBox = "";
+
+        if(item.type === "user"){
+
+            const username =
+                item.username || "New User";
+
+            const firstLetter =
+                username.charAt(0).toUpperCase();
+
+            userBox = `
+                <div class="new-user">
+
+                    <div class="new-user-avatar">
+                        ${escapeHTML(firstLetter)}
+                    </div>
+
+                    <div class="new-user-info">
+
+                        <strong>
+                            ${escapeHTML(username)}
+                        </strong>
+
+                        <span>
+                            <span class="online"></span>
+                            New member
+                        </span>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+        return `
+            <div class="notification ${item.read ? "" : "unread"}">
+
+                <div class="icon ${iconClass}">
+                    ${icon}
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        ${escapeHTML(item.title || "Notification")}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(item.message || "")}
+                    </p>
+
+                    ${userBox}
+
+                    <span class="time">
+                        ${escapeHTML(item.date || "")}
+                    </span>
+
+                </div>
+
+                <div class="notification-actions">
+
+                    ${
+                        item.read
+                        ?
+                        ""
+                        :
+                        `
+                        <button
+                            class="small-btn"
+                            onclick="markRead('${item.id}')">
+                            Read
+                        </button>
+                        `
+                    }
+
+                    <button
+                        class="small-btn"
+                        onclick="deleteNotification('${item.id}')">
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+    updateUnreadCount();
+}
+
+/* ------------------------------
+   UNREAD COUNT
+------------------------------ */
+
+function updateUnreadCount(){
+
+    const notifications = getNotifications();
+
+    const unread =
+        notifications.filter(item => !item.read).length;
+
+    document.getElementById("unreadBadge").textContent =
+        unread + (unread === 1 ? " Unread" : " Unread");
+}
+
+/* ------------------------------
+   MARK READ
+------------------------------ */
+
+function markRead(id){
+
+    const notifications = getNotifications();
+
+    const item = notifications.find(
+        notification => notification.id === id
+    );
+
+    if(item){
+        item.read = true;
+    }
+
+    saveNotifications(notifications);
+
+    renderNotifications();
+}
+
+/* ------------------------------
+   MARK ALL READ
+------------------------------ */
+
+function markAllRead(){
+
+    const notifications = getNotifications();
+
+    notifications.forEach(function(item){
+        item.read = true;
+    });
+
+    saveNotifications(notifications);
+
+    renderNotifications();
+}
+
+/* ------------------------------
+   DELETE
+------------------------------ */
+
+function deleteNotification(id){
+
+    let notifications = getNotifications();
+
+    notifications = notifications.filter(
+        item => item.id !== id
+    );
+
+    saveNotifications(notifications);
+
+    renderNotifications();
+}
+
+/* ------------------------------
+   CLEAR ALL
+------------------------------ */
+
+function clearAll(){
+
+    if(!confirm("Clear all notifications?")){
+        return;
+    }
+
+    localStorage.removeItem(NOTIFICATION_KEY);
+
+    renderNotifications();
+}
+
+/* ------------------------------
+   FILTER
+------------------------------ */
+
+function setFilter(filter,button){
+
+    currentFilter = filter;
+
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(function(btn){
+
+            btn.classList.remove("active");
+
+        });
+
+    button.classList.add("active");
+
+    renderNotifications();
+}
+
+/* ------------------------------
+   HTML SECURITY
+------------------------------ */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+/* ------------------------------
+   LOGOUT
+------------------------------ */
+
+function logout(){
+
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("pennyUser");
+
+    window.location.replace("login.html");
+}
+
+/* ------------------------------
+   START
+------------------------------ */
+
+createNewUserNotification();
+
+renderNotifications();
+
+</script>
+
+</body>
+</html>

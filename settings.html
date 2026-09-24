@@ -1,0 +1,2139 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Settings</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* HEADER */
+        .header {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e3eaf2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .menu-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: #087ff5;
+            color: white;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            right: -280px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: #ffffff;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: 0.3s;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar h3 {
+            color: #087ff5;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 6px;
+            border-radius: 7px;
+            color: #25344d;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf4ff;
+            color: #087ff5;
+        }
+
+        .logout {
+            color: #e53935 !important;
+        }
+
+        /* MAIN */
+        .container {
+            width: 94%;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            font-size: 30px;
+            color: #14213d;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        /* SETTINGS CARD */
+        .settings-card {
+            background: #ffffff;
+            border: 1px solid #e2eaf3;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .settings-title {
+            padding: 20px;
+            border-bottom: 1px solid #e8edf3;
+        }
+
+        .settings-title h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .settings-title p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* SETTING ITEM */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .setting-info p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* TOGGLE */
+        .switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #cbd5e1;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .switch input:checked+.slider {
+            background: #087ff5;
+        }
+
+        .switch input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* SELECT */
+        select {
+            padding: 10px 12px;
+            border: 1px solid #ccd7e5;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            outline: none;
+            min-width: 150px;
+        }
+
+        select:focus {
+            border-color: #087ff5;
+        }
+
+        /* BUTTON */
+        .button-row {
+            padding: 20px;
+        }
+
+        .save-btn {
+            border: none;
+            background: #087ff5;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .save-btn:hover {
+            background: #066dcc;
+        }
+
+        /* DANGER */
+        .danger-card {
+            border-color: #ffd7d7;
+        }
+
+        .danger-card .settings-title h2 {
+            color: #d32f2f;
+        }
+
+        .danger-btn {
+            border: none;
+            background: #e53935;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* MESSAGE */
+        .message {
+            display: none;
+            padding: 14px 16px;
+            margin-bottom: 22px;
+            border-radius: 8px;
+            background: #e7f8ee;
+            color: #16834b;
+        }
+
+        /* NOTICE */
+        .notice {
+            background: #eef7ff;
+            border-left: 4px solid #087ff5;
+            padding: 16px;
+            border-radius: 8px;
+            color: #40516b;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #718096;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 650px) {
+            .container {
+                width: 92%;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .setting-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            select {
+                width: 100%;
+            }
+
+            .switch {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <a href="dashboard.html" class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <h3>Penny Menu</h3>
+
+        <a href="dashboard.html">Home</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="earnings.html">My Earnings</a>
+        <a href="withdraw.html">Withdraw</a>
+        <a href="withdrawals.html">Withdrawal History</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="referral.html">Referral</a>
+        <a href="referrals.html">Referral History</a>
+        <a href="profile.html">Profile</a>
+        <a href="settings.html" class="active">Settings</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="#" class="logout" onclick="logout()">Logout</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <h1 class="page-title">Settings</h1>
+
+        <p class="subtitle">
+            Manage your Penny account preferences.
+        </p>
+
+        <div class="message" id="message">
+            Your settings have been saved.
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <section class="settings-card">
+
+            <div class="settings-title">
+                <h2>Notifications</h2>
+                <p>Choose which notifications you want to receive.</p>
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Task Notifications</h3>
+                    <p>
+                        Get notified when new tasks become available.
+                    </p>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" id="taskNotifications" checked>
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Withdrawal Notifications</h3>
+                    <p>
+                        Receive updates about your withdrawal requests.
+                    </p>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" id="withdrawNotifications" checked>
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Referral Notifications</h3>
+                    <p>
+                        Receive updates about referral activity and rewards.
+                    </p>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" id="referralNotifications" checked>
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+        </section>
+
+        <!-- PREFERENCES -->
+        <section class="settings-card">
+
+            <div class="settings-title">
+                <h2>Preferences</h2>
+                <p>Customize how Penny works for you.</p>
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Language</h3>
+                    <p>
+                        Select your preferred language.
+                    </p>
+                </div>
+
+                <select id="language">
+                    <option value="English">English</option>
+                    <option value="Yoruba">Yoruba</option>
+                    <option value="Hausa">Hausa</option>
+                    <option value="Igbo">Igbo</option>
+                </select>
+
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Currency</h3>
+                    <p>
+                        Choose the currency used to display rewards.
+                    </p>
+                </div>
+
+                <select id="currency">
+                    <option value="NGN">₦ Nigerian Naira</option>
+                    <option value="USD">$ US Dollar</option>
+                    <option value="GBP">£ British Pound</option>
+                </select>
+
+            </div>
+
+            <div class="button-row">
+                <button class="save-btn" onclick="saveSettings()">
+                    Save Settings
+                </button>
+            </div>
+
+        </section>
+
+        <!-- SECURITY -->
+        <section class="settings-card">
+
+            <div class="settings-title">
+                <h2>Security</h2>
+                <p>Manage your account security options.</p>
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Password</h3>
+                    <p>
+                        Change your Penny account password.
+                    </p>
+                </div>
+
+                <a href="reset-password.html" class="save-btn">
+                    Change Password
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- DANGER ZONE -->
+        <section class="settings-card danger-card">
+
+            <div class="settings-title">
+                <h2>Danger Zone</h2>
+                <p>
+                    Actions in this section can affect your account.
+                </p>
+            </div>
+
+            <div class="setting-item">
+
+                <div class="setting-info">
+                    <h3>Log Out</h3>
+                    <p>
+                        Sign out of your current Penny session.
+                    </p>
+                </div>
+
+                <button class="danger-btn" onclick="logout()">
+                    Log Out
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- NOTICE -->
+        <div class="notice">
+            <strong>Important:</strong>
+            These settings currently use browser storage for demonstration.
+            A complete Penny system should save account preferences securely
+            on the backend/database.
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        function saveSettings() {
+
+            const settings = {
+                taskNotifications:
+                    document.getElementById("taskNotifications").checked,
+
+                withdrawNotifications:
+                    document.getElementById("withdrawNotifications").checked,
+
+                referralNotifications:
+                    document.getElementById("referralNotifications").checked,
+
+                language:
+                    document.getElementById("language").value,
+
+                currency:
+                    document.getElementById("currency").value
+            };
+
+            localStorage.setItem(
+                "pennySettings",
+                JSON.stringify(settings)
+            );
+
+            const message = document.getElementById("message");
+
+            message.style.display = "block";
+            message.textContent =
+                "Your settings have been saved for this demo.";
+
+            setTimeout(function () {
+                message.style.display = "none";
+            }, 3000);
+        }
+
+        function loadSettings() {
+
+            const saved =
+                localStorage.getItem("pennySettings");
+
+            if (!saved) {
+                return;
+            }
+
+            try {
+
+                const settings = JSON.parse(saved);
+
+                document.getElementById("taskNotifications").checked =
+                    settings.taskNotifications ?? true;
+
+                document.getElementById("withdrawNotifications").checked =
+                    settings.withdrawNotifications ?? true;
+
+                document.getElementById("referralNotifications").checked =
+                    settings.referralNotifications ?? true;
+
+                if (settings.language) {
+                    document.getElementById("language").value =
+                        settings.language;
+                }
+
+                if (settings.currency) {
+                    document.getElementById("currency").value =
+                        settings.currency;
+                }
+
+            } catch (error) {
+                console.log("Settings could not be loaded.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("pennyUser");
+            window.location.replace("login.html");
+        }
+
+        loadSettings();
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Penny</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        .header {
+            height: 65px;
+            background: #fff;
+            border-bottom: 1px solid #e5eaf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #087df0;
+        }
+
+        .menu-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 10px;
+            background: #eaf4ff;
+            color: #087df0;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            bottom: 0;
+            width: 245px;
+            background: #fff;
+            border-right: 1px solid #e5eaf0;
+            padding: 18px 12px;
+            overflow-y: auto;
+            transition: .3s;
+            z-index: 90;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #4b5563;
+            padding: 13px 15px;
+            margin-bottom: 5px;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            background: #edf6ff;
+            color: #087df0;
+        }
+
+        .sidebar a.active {
+            background: #087df0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .sidebar .logout {
+            color: #e53935;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .page-title {
+            margin-bottom: 22px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .settings-menu {
+            background: #fff;
+            border: 1px solid #e5eaf0;
+            border-radius: 15px;
+            padding: 10px;
+            position: sticky;
+            top: 87px;
+        }
+
+        .settings-menu button {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #596579;
+            padding: 13px 12px;
+            text-align: left;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .settings-menu button:hover {
+            background: #edf6ff;
+            color: #087df0;
+        }
+
+        .settings-menu button.active {
+            background: #087df0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .settings-content {
+            min-width: 0;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5eaf0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-description {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 17px 0;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-info strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .setting-info span {
+            display: block;
+            color: #727c89;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .toggle {
+            width: 48px;
+            height: 26px;
+            border: none;
+            border-radius: 20px;
+            background: #cbd5e1;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: .2s;
+        }
+
+        .toggle::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            transition: .2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .15);
+        }
+
+        .toggle.on {
+            background: #087df0;
+        }
+
+        .toggle.on::after {
+            left: 24px;
+        }
+
+        .select-box {
+            min-width: 150px;
+            height: 42px;
+            border: 1px solid #dce3eb;
+            border-radius: 8px;
+            padding: 0 10px;
+            background: #fff;
+            outline: none;
+            color: #172033;
+        }
+
+        .input-box {
+            width: 180px;
+            height: 42px;
+            border: 1px solid #dce3eb;
+            border-radius: 8px;
+            padding: 0 11px;
+            outline: none;
+        }
+
+        .input-box:focus,
+        .select-box:focus {
+            border-color: #087df0;
+            box-shadow: 0 0 0 3px rgba(8, 125, 240, .08);
+        }
+
+        .save-btn {
+            width: 100%;
+            height: 47px;
+            border: none;
+            border-radius: 9px;
+            background: #087df0;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            background: #056bcf;
+        }
+
+        .success {
+            display: none;
+            background: #e8f8ee;
+            color: #16763a;
+            border: 1px solid #bce7ca;
+            padding: 12px;
+            border-radius: 9px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .danger-btn {
+            width: 100%;
+            height: 45px;
+            border: 1px solid #efb2b2;
+            background: #fff5f5;
+            color: #d32f2f;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .danger-btn:hover {
+            background: #ffe8e8;
+        }
+
+        .security-item {
+            background: #f7faff;
+            border: 1px solid #e1eaf5;
+            border-radius: 11px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .security-item strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .security-item span {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #e8f8ee;
+            color: #16763a;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .notice {
+            background: #fff8e8;
+            border: 1px solid #f0d38a;
+            color: #795b13;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        footer {
+            margin-left: 245px;
+            text-align: center;
+            padding: 25px 15px;
+            background: #fff;
+            border-top: 1px solid #e5eaf0;
+            color: #7a8491;
+            font-size: 13px;
+        }
+
+        @media(max-width:900px) {
+
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-menu {
+                position: static;
+                display: flex;
+                gap: 5px;
+                overflow-x: auto;
+                padding: 8px;
+            }
+
+            .settings-menu button {
+                min-width: max-content;
+                margin: 0;
+            }
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                left: -260px;
+            }
+
+            .sidebar.open {
+                left: 0;
+                box-shadow: 8px 0 25px rgba(0, 0, 0, .12);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 22px 15px;
+            }
+
+            footer {
+                margin-left: 0;
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .setting-row {
+                align-items: flex-start;
+            }
+
+            .select-box,
+            .input-box {
+                min-width: 120px;
+                width: 120px;
+            }
+        }
+
+        @media(max-width:420px) {
+
+            .header {
+                padding: 0 12px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .main {
+                padding: 18px 10px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .setting-row {
+                flex-direction: column;
+            }
+
+            .select-box,
+            .input-box {
+                width: 100%;
+            }
+
+            .toggle {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="logo-area">
+
+            <img src="./images/penny1.jpg" class="logo" alt="Penny">
+
+            <div class="logo-text">
+                Penny
+            </div>
+
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">
+            ☰
+        </button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="earnings.html">My Earnings</a>
+        <a href="daily-bonus.html">Daily Bonus</a>
+        <a href="withdraw.html">Withdraw</a>
+        <a href="withdrawals.html">Withdrawal History</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="referral.html">Referral</a>
+        <a href="referrals.html">Referral History</a>
+        <a href="profile.html">Profile</a>
+        <a href="settings.html" class="active">Settings</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="#" class="logout" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="page-title">
+
+            <h1>Settings</h1>
+
+            <p>
+                Control your Penny account, preferences and security.
+            </p>
+
+        </div>
+
+
+        <div class="settings-layout">
+
+
+            <!-- SETTINGS MENU -->
+
+            <div class="settings-menu">
+
+                <button class="active" onclick="showSection('general',this)">
+                    General
+                </button>
+
+                <button onclick="showSection('notifications',this)">
+                    Notifications
+                </button>
+
+                <button onclick="showSection('security',this)">
+                    Security
+                </button>
+
+                <button onclick="showSection('withdrawal',this)">
+                    Withdrawal
+                </button>
+
+                <button onclick="showSection('referral',this)">
+                    Referral
+                </button>
+
+                <button onclick="showSection('privacy',this)">
+                    Privacy
+                </button>
+
+                <button onclick="showSection('appearance',this)">
+                    Appearance
+                </button>
+
+                <button onclick="showSection('account',this)">
+                    Account
+                </button>
+
+            </div>
+
+
+            <div class="settings-content">
+
+
+                <!-- GENERAL -->
+
+                <section class="settings-section active" id="general">
+
+                    <div class="card">
+
+                        <h2>General Settings</h2>
+
+                        <p class="card-description">
+                            Manage your basic Penny preferences.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Language</strong>
+
+                                <span>
+                                    Choose the language used throughout Penny.
+                                </span>
+
+                            </div>
+
+                            <select class="select-box" id="language">
+
+                                <option value="English">
+                                    English
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Currency</strong>
+
+                                <span>
+                                    Currency displayed on your account.
+                                </span>
+
+                            </div>
+
+                            <select class="select-box" id="currency">
+
+                                <option value="NGN">
+                                    NGN ₦
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Auto Refresh Balance</strong>
+
+                                <span>
+                                    Refresh account balance when returning to the dashboard.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" id="autoRefresh" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save General Settings
+                        </button>
+
+                        <div class="success" id="generalSuccess">
+                            General settings saved successfully.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- NOTIFICATIONS -->
+
+                <section class="settings-section" id="notifications">
+
+                    <div class="card">
+
+                        <h2>Notification Settings</h2>
+
+                        <p class="card-description">
+                            Choose which account notifications you want to receive.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Task Notifications</strong>
+
+                                <span>
+                                    Receive updates about tasks and task approvals.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Withdrawal Notifications</strong>
+
+                                <span>
+                                    Receive updates when withdrawal status changes.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Referral Notifications</strong>
+
+                                <span>
+                                    Receive notifications about referral activity.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Daily Bonus Reminder</strong>
+
+                                <span>
+                                    Remind you when your daily bonus is available.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save Notification Settings
+                        </button>
+
+                        <div class="success" id="notificationSuccess">
+                            Notification settings saved.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECURITY -->
+
+                <section class="settings-section" id="security">
+
+                    <div class="card">
+
+                        <h2>Security</h2>
+
+                        <p class="card-description">
+                            Review your account security settings.
+                        </p>
+
+
+                        <div class="security-item">
+
+                            <strong>
+                                Account Authentication
+                            </strong>
+
+                            <span>
+                                Current authentication mode:
+                                <b>Demo Mode</b>
+                            </span>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <strong>
+                                Login Protection
+                            </strong>
+
+                            <span>
+                                Your account will use secure server-side
+                                authentication after the database is connected.
+                            </span>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <strong>
+                                Password
+                            </strong>
+
+                            <span>
+                                Password management will be handled by the
+                                authentication system.
+                            </span>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <strong>
+                                Account Status
+                            </strong>
+
+                            <span>
+                                <span class="badge">
+                                    Active
+                                </span>
+                            </span>
+
+                        </div>
+
+
+                        <button class="save-btn"
+                            onclick="alert('Security settings are ready for the database authentication system.')">
+                            Review Security
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WITHDRAWAL -->
+
+                <section class="settings-section" id="withdrawal">
+
+                    <div class="card">
+
+                        <h2>Withdrawal Preferences</h2>
+
+                        <p class="card-description">
+                            Configure your preferred withdrawal options.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Default Withdrawal Method</strong>
+
+                                <span>
+                                    The method selected by default on the withdrawal page.
+                                </span>
+
+                            </div>
+
+                            <select class="select-box" id="withdrawMethod">
+
+                                <option value="Bank Transfer">
+                                    Bank Transfer
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Withdrawal Notifications</strong>
+
+                                <span>
+                                    Get notified about pending, approved and rejected requests.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Remember Withdrawal Details</strong>
+
+                                <span>
+                                    Save withdrawal preferences for easier future requests.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save Withdrawal Settings
+                        </button>
+
+                        <div class="success" id="withdrawSuccess">
+                            Withdrawal preferences saved.
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- REFERRAL -->
+
+                <section class="settings-section" id="referral">
+
+                    <div class="card">
+
+                        <h2>Referral Settings</h2>
+
+                        <p class="card-description">
+                            Manage how your referral information is displayed.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Referral Link</strong>
+
+                                <span>
+                                    Your personal referral link uses your Penny username.
+                                </span>
+
+                            </div>
+
+                            <span class="badge">
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Referral Notifications</strong>
+
+                                <span>
+                                    Notify me about new referral activity.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Show Referral Statistics</strong>
+
+                                <span>
+                                    Display referral statistics on your account.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle on" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save Referral Settings
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PRIVACY -->
+
+                <section class="settings-section" id="privacy">
+
+                    <div class="card">
+
+                        <h2>Privacy</h2>
+
+                        <p class="card-description">
+                            Manage privacy-related preferences for your Penny account.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Profile Visibility</strong>
+
+                                <span>
+                                    Control whether your basic profile can be displayed
+                                    to other users.
+                                </span>
+
+                            </div>
+
+                            <select class="select-box" id="profileVisibility">
+
+                                <option value="private">
+                                    Private
+                                </option>
+
+                                <option value="public">
+                                    Public
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Activity Visibility</strong>
+
+                                <span>
+                                    Control whether selected account activity can be visible.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save Privacy Settings
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- APPEARANCE -->
+
+                <section class="settings-section" id="appearance">
+
+                    <div class="card">
+
+                        <h2>Appearance</h2>
+
+                        <p class="card-description">
+                            Customize how Penny looks on your device.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Theme</strong>
+
+                                <span>
+                                    Select your preferred Penny appearance.
+                                </span>
+
+                            </div>
+
+                            <select class="select-box" id="theme">
+
+                                <option value="light">
+                                    Light
+                                </option>
+
+                                <option value="system">
+                                    System Default
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Compact Mode</strong>
+
+                                <span>
+                                    Reduce spacing for a more compact interface.
+                                </span>
+
+                            </div>
+
+                            <button class="toggle" onclick="toggleSetting(this)"></button>
+
+                        </div>
+
+
+                        <button class="save-btn" onclick="saveSettings()">
+                            Save Appearance Settings
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACCOUNT -->
+
+                <section class="settings-section" id="account">
+
+                    <div class="card">
+
+                        <h2>Account Management</h2>
+
+                        <p class="card-description">
+                            Manage your Penny account.
+                        </p>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Account Status</strong>
+
+                                <span>
+                                    Your current Penny account status.
+                                </span>
+
+                            </div>
+
+                            <span class="badge">
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div class="setting-info">
+
+                                <strong>Clear Demo Data</strong>
+
+                                <span>
+                                    Remove temporary Penny data stored in this browser.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <button class="danger-btn" onclick="clearDemoData()">
+                            Clear Demo Data
+                        </button>
+
+
+                        <button class="danger-btn" onclick="logout()">
+                            Logout From Penny
+                        </button>
+
+                    </div>
+
+
+                    <div class="notice">
+
+                        <strong>Important:</strong>
+                        Account deletion will be connected to the real database
+                        later. Do not use the demo data controls as a replacement
+                        for a real account deletion system.
+
+                    </div>
+
+                </section>
+
+
+                <div class="notice">
+
+                    <strong>Demo Mode:</strong>
+                    These settings are currently saved in your browser using
+                    localStorage. After Penny is connected to a real database,
+                    these preferences can be synchronized across your devices.
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+
+    <script>
+
+        /* MENU */
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList
+                .toggle("open");
+
+        }
+
+
+        /* SETTINGS TABS */
+
+        function showSection(sectionId, button) {
+
+            document
+                .querySelectorAll(".settings-section")
+                .forEach(function (section) {
+
+                    section.classList.remove("active");
+
+                });
+
+
+            document
+                .querySelectorAll(".settings-menu button")
+                .forEach(function (btn) {
+
+                    btn.classList.remove("active");
+
+                });
+
+
+            document
+                .getElementById(sectionId)
+                .classList.add("active");
+
+
+            button.classList.add("active");
+
+        }
+
+
+        /* TOGGLE */
+
+        function toggleSetting(button) {
+
+            button.classList.toggle("on");
+
+        }
+
+
+        /* SAVE */
+
+        function saveSettings() {
+
+            const settings = {
+
+                language:
+                    document.getElementById("language")?.value || "English",
+
+                currency:
+                    document.getElementById("currency")?.value || "NGN",
+
+                withdrawMethod:
+                    document.getElementById("withdrawMethod")?.value ||
+                    "Bank Transfer",
+
+                profileVisibility:
+                    document.getElementById("profileVisibility")?.value ||
+                    "private",
+
+                theme:
+                    document.getElementById("theme")?.value ||
+                    "light",
+
+                savedAt:
+                    Date.now()
+
+            };
+
+
+            localStorage.setItem(
+                "pennySettings",
+                JSON.stringify(settings)
+            );
+
+
+            showSuccessMessages();
+
+        }
+
+
+        /* SUCCESS */
+
+        function showSuccessMessages() {
+
+            document
+                .querySelectorAll(".success")
+                .forEach(function (message) {
+
+                    message.style.display = "block";
+
+                    setTimeout(function () {
+
+                        message.style.display = "none";
+
+                    }, 3000);
+
+                });
+
+        }
+
+
+        /* LOAD SETTINGS */
+
+        function loadSettings() {
+
+            const saved =
+                localStorage.getItem("pennySettings");
+
+
+            if (!saved) {
+                return;
+            }
+
+
+            try {
+
+                const settings =
+                    JSON.parse(saved);
+
+
+                if (
+                    settings.language &&
+                    document.getElementById("language")
+                ) {
+
+                    document.getElementById("language").value =
+                        settings.language;
+
+                }
+
+
+                if (
+                    settings.currency &&
+                    document.getElementById("currency")
+                ) {
+
+                    document.getElementById("currency").value =
+                        settings.currency;
+
+                }
+
+
+                if (
+                    settings.withdrawMethod &&
+                    document.getElementById("withdrawMethod")
+                ) {
+
+                    document.getElementById("withdrawMethod").value =
+                        settings.withdrawMethod;
+
+                }
+
+
+                if (
+                    settings.profileVisibility &&
+                    document.getElementById("profileVisibility")
+                ) {
+
+                    document.getElementById("profileVisibility").value =
+                        settings.profileVisibility;
+
+                }
+
+
+                if (
+                    settings.theme &&
+                    document.getElementById("theme")
+                ) {
+
+                    document.getElementById("theme").value =
+                        settings.theme;
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Settings could not be loaded."
+                );
+
+            }
+
+        }
+
+
+        /* CLEAR DEMO DATA */
+
+        function clearDemoData() {
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to clear your Penny demo data? This cannot be undone."
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            const keys = [
+
+                "pennyBalance",
+                "pennyEarnings",
+                "pennyWithdrawn",
+                "pennyWithdrawals",
+                "pennyTransactions",
+                "pennyReferrals",
+                "pennyDailyBonus",
+                "pennyReferralCode",
+                "pennyProfile",
+                "pennySettings"
+
+            ];
+
+
+            keys.forEach(function (key) {
+
+                localStorage.removeItem(key);
+
+            });
+
+
+            alert(
+                "Demo data has been cleared."
+            );
+
+
+            window.location.reload();
+
+        }
+
+
+        /* LOGOUT */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "isLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "pennyUser"
+            );
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+
+        /* START */
+
+        loadSettings();
+
+    </script>
+
+</body>
+
+</html>

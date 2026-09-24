@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Site Settings</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            height: 65px;
+            background: #ffffff;
+            border-bottom: 1px solid #dfe7f3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #1264d8;
+            font-size: 20px;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            border: none;
+            background: #1264d8;
+            color: #ffffff;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #ffffff;
+            border-right: 1px solid #dfe7f3;
+            padding: 20px 12px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            color: #7a8799;
+            text-transform: uppercase;
+            margin: 5px 12px 12px;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            color: #435066;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #edf5ff;
+            color: #1264d8;
+        }
+
+        .nav-link.active {
+            background: #1264d8;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .nav-link.logout {
+            margin-top: 15px;
+            color: #d12f2f;
+        }
+
+        .nav-link.logout:hover {
+            background: #fff0f0;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+            max-width: 1200px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .notice {
+            background: #fff8df;
+            border: 1px solid #f0d36a;
+            color: #725b00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .settings-card {
+            background: #ffffff;
+            border: 1px solid #e0e8f3;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5ebf3;
+            background: #fbfdff;
+        }
+
+        .card-header h2 {
+            font-size: 18px;
+            color: #172033;
+        }
+
+        .card-header p {
+            font-size: 13px;
+            color: #7a8799;
+            margin-top: 5px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #37445a;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d5dfeb;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            outline: none;
+            background: #ffffff;
+            color: #172033;
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #1264d8;
+            box-shadow: 0 0 0 3px rgba(18, 100, 216, 0.08);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf1f6;
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info h3 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .toggle-info p {
+            color: #7a8799;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: #cbd5e1;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            top: 3px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .switch input:checked+.slider {
+            background: #1264d8;
+        }
+
+        .switch input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        .save-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .save-btn {
+            border: none;
+            background: #1264d8;
+            color: #ffffff;
+            padding: 13px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .save-btn:hover {
+            background: #0d55b9;
+        }
+
+        .saved-message {
+            display: none;
+            color: #16834b;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .danger-card {
+            border-color: #f0cccc;
+        }
+
+        .danger-card .card-header {
+            background: #fff8f8;
+        }
+
+        .danger-text {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .maintenance-warning {
+            color: #b02a2a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            color: #7a8799;
+            font-size: 12px;
+            padding: 25px 15px;
+            border-top: 1px solid #dfe7f3;
+            background: #ffffff;
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 65px;
+                bottom: 0;
+                z-index: 999;
+                transition: 0.25s;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main {
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0 12px;
+            }
+
+            .brand {
+                font-size: 17px;
+            }
+
+            .brand img {
+                width: 34px;
+                height: 34px;
+            }
+
+            .main {
+                padding: 18px 10px;
+            }
+
+            .page-title {
+                font-size: 23px;
+            }
+
+            .card-body,
+            .card-header {
+                padding: 15px;
+            }
+
+            .toggle-row {
+                align-items: flex-start;
+            }
+
+            .save-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .save-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="index.html" class="brand">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+            <span>Penny Admin</span>
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-title">Admin Panel</div>
+
+            <a href="index.html" class="nav-link">Dashboard</a>
+            <a href="users.html" class="nav-link">Users</a>
+            <a href="tasks.html" class="nav-link">Tasks</a>
+            <a href="withdrawals.html" class="nav-link">Withdrawals</a>
+            <a href="transactions.html" class="nav-link">Transactions</a>
+            <a href="referrals.html" class="nav-link">Referrals</a>
+            <a href="settings.html" class="nav-link active">Site Settings</a>
+
+            <div class="sidebar-title" style="margin-top:25px;">User Area</div>
+
+            <a href="../dashboard.html" class="nav-link">User Dashboard</a>
+            <a href="#" class="nav-link logout" onclick="adminLogout()">Logout</a>
+        </aside>
+
+        <main class="main">
+
+            <h1 class="page-title">Site Settings</h1>
+            <p class="page-subtitle">
+                Manage the main configuration of your Penny platform.
+            </p>
+
+            <div class="notice">
+                <strong>Demo Mode:</strong>
+                These settings are currently saved only in this browser using
+                localStorage. They will control the real Penny platform after a
+                secure backend and database are connected.
+            </div>
+
+            <!-- GENERAL SETTINGS -->
+            <section class="settings-card">
+
+                <div class="card-header">
+                    <h2>General Settings</h2>
+                    <p>Basic information about your Penny website.</p>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="siteName">Site Name</label>
+                            <input type="text" id="siteName" value="Penny">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currency">Default Currency</label>
+                            <select id="currency">
+                                <option value="NGN">NGN - Nigerian Naira</option>
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="GBP">GBP - British Pound</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="siteDescription">Site Description</label>
+                            <textarea
+                                id="siteDescription">Penny is an online rewards platform where users can discover available activities and earn rewards.</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="whatsapp">Support WhatsApp Number</label>
+                            <input type="text" id="whatsapp" value="08052396358">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="language">Default Language</label>
+                            <select id="language">
+                                <option value="English">English</option>
+                                <option value="Yoruba">Yoruba</option>
+                                <option value="Hausa">Hausa</option>
+                                <option value="Igbo">Igbo</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TASK SETTINGS -->
+            <section class="settings-card">
+
+                <div class="card-header">
+                    <h2>Task Settings</h2>
+                    <p>Control how tasks will operate on Penny.</p>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h3>Enable Tasks</h3>
+                            <p>Allow users to see and complete available tasks.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="tasksEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <br>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="minTaskReward">
+                                Minimum Task Reward
+                            </label>
+
+                            <input type="number" id="minTaskReward" value="100" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="approvalMode">
+                                Task Approval Mode
+                            </label>
+
+                            <select id="approvalMode">
+                                <option value="manual">Manual Approval</option>
+                                <option value="automatic">Automatic Approval</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- WITHDRAWAL SETTINGS -->
+            <section class="settings-card">
+
+                <div class="card-header">
+                    <h2>Withdrawal Settings</h2>
+                    <p>Configure withdrawal requirements and processing.</p>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h3>Enable Withdrawals</h3>
+                            <p>Allow eligible users to submit withdrawal requests.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="withdrawalsEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <br>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="minWithdrawal">
+                                Minimum Withdrawal Amount
+                            </label>
+
+                            <input type="number" id="minWithdrawal" value="1000" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="withdrawalApproval">
+                                Withdrawal Approval
+                            </label>
+
+                            <select id="withdrawalApproval">
+                                <option value="manual">Manual Approval</option>
+                                <option value="automatic">Automatic Processing</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="processingNote">
+                                Processing Note
+                            </label>
+
+                            <textarea
+                                id="processingNote">Withdrawal requests may require review before payment is processed.</textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- REFERRAL SETTINGS -->
+            <section class="settings-card">
+
+                <div class="card-header">
+                    <h2>Referral Settings</h2>
+                    <p>Configure the Penny referral system.</p>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h3>Enable Referrals</h3>
+                            <p>Allow users to invite other people through referral links.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="referralsEnabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <br>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="referralReward">
+                                Referral Reward
+                            </label>
+
+                            <input type="number" id="referralReward" value="250" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxReferrals">
+                                Maximum Referrals
+                            </label>
+
+                            <input type="number" id="maxReferrals" value="100" min="0">
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- MAINTENANCE -->
+            <section class="settings-card danger-card">
+
+                <div class="card-header">
+                    <h2>Maintenance Mode</h2>
+                    <p>Temporarily restrict normal platform activity.</p>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <h3>Enable Maintenance Mode</h3>
+                            <p>
+                                Use this when you need to perform updates or
+                                maintenance.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="maintenanceMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <br>
+
+                    <p class="maintenance-warning">
+                        Warning: In the real system, enabling this option could
+                        prevent users from accessing parts of Penny.
+                    </p>
+
+                </div>
+            </section>
+
+            <div class="save-area">
+
+                <button class="save-btn" onclick="saveSettings()">
+                    Save Settings
+                </button>
+
+                <span class="saved-message" id="savedMessage">
+                    Settings saved successfully.
+                </span>
+
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
+
+        function saveSettings() {
+
+            const settings = {
+                siteName: document.getElementById("siteName").value,
+                siteDescription: document.getElementById("siteDescription").value,
+                whatsapp: document.getElementById("whatsapp").value,
+                currency: document.getElementById("currency").value,
+                language: document.getElementById("language").value,
+
+                tasksEnabled:
+                    document.getElementById("tasksEnabled").checked,
+
+                minTaskReward:
+                    document.getElementById("minTaskReward").value,
+
+                approvalMode:
+                    document.getElementById("approvalMode").value,
+
+                withdrawalsEnabled:
+                    document.getElementById("withdrawalsEnabled").checked,
+
+                minWithdrawal:
+                    document.getElementById("minWithdrawal").value,
+
+                withdrawalApproval:
+                    document.getElementById("withdrawalApproval").value,
+
+                processingNote:
+                    document.getElementById("processingNote").value,
+
+                referralsEnabled:
+                    document.getElementById("referralsEnabled").checked,
+
+                referralReward:
+                    document.getElementById("referralReward").value,
+
+                maxReferrals:
+                    document.getElementById("maxReferrals").value,
+
+                maintenanceMode:
+                    document.getElementById("maintenanceMode").checked
+            };
+
+            localStorage.setItem(
+                "pennyAdminSettings",
+                JSON.stringify(settings)
+            );
+
+            const message = document.getElementById("savedMessage");
+
+            message.style.display = "inline";
+
+            setTimeout(function () {
+                message.style.display = "none";
+            }, 3000);
+        }
+
+        function loadSettings() {
+
+            const saved =
+                localStorage.getItem("pennyAdminSettings");
+
+            if (!saved) return;
+
+            const settings = JSON.parse(saved);
+
+            if (settings.siteName !== undefined)
+                document.getElementById("siteName").value = settings.siteName;
+
+            if (settings.siteDescription !== undefined)
+                document.getElementById("siteDescription").value = settings.siteDescription;
+
+            if (settings.whatsapp !== undefined)
+                document.getElementById("whatsapp").value = settings.whatsapp;
+
+            if (settings.currency !== undefined)
+                document.getElementById("currency").value = settings.currency;
+
+            if (settings.language !== undefined)
+                document.getElementById("language").value = settings.language;
+
+            if (settings.tasksEnabled !== undefined)
+                document.getElementById("tasksEnabled").checked = settings.tasksEnabled;
+
+            if (settings.minTaskReward !== undefined)
+                document.getElementById("minTaskReward").value = settings.minTaskReward;
+
+            if (settings.approvalMode !== undefined)
+                document.getElementById("approvalMode").value = settings.approvalMode;
+
+            if (settings.withdrawalsEnabled !== undefined)
+                document.getElementById("withdrawalsEnabled").checked = settings.withdrawalsEnabled;
+
+            if (settings.minWithdrawal !== undefined)
+                document.getElementById("minWithdrawal").value = settings.minWithdrawal;
+
+            if (settings.withdrawalApproval !== undefined)
+                document.getElementById("withdrawalApproval").value = settings.withdrawalApproval;
+
+            if (settings.processingNote !== undefined)
+                document.getElementById("processingNote").value = settings.processingNote;
+
+            if (settings.referralsEnabled !== undefined)
+                document.getElementById("referralsEnabled").checked = settings.referralsEnabled;
+
+            if (settings.referralReward !== undefined)
+                document.getElementById("referralReward").value = settings.referralReward;
+
+            if (settings.maxReferrals !== undefined)
+                document.getElementById("maxReferrals").value = settings.maxReferrals;
+
+            if (settings.maintenanceMode !== undefined)
+                document.getElementById("maintenanceMode").checked = settings.maintenanceMode;
+        }
+
+        function adminLogout() {
+
+            localStorage.removeItem("pennyAdminLoggedIn");
+            localStorage.removeItem("pennyAdminUser");
+
+            window.location.replace("../admin-login.html");
+        }
+
+        loadSettings();
+    </script>
+
+</body>
+
+</html>

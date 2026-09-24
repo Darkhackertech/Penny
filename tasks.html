@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Tasks</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8ff;
+            color: #172033;
+        }
+
+        header {
+            height: 65px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: bold;
+            color: #1677ff;
+        }
+
+        .logo img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 10px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 65px;
+            width: 245px;
+            height: calc(100vh - 65px);
+            background: #fff;
+            border-right: 1px solid #e4eaf3;
+            padding: 20px 12px;
+            overflow-y: auto;
+            transition: .3s;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #445066;
+            padding: 13px 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf3ff;
+            color: #1677ff;
+            font-weight: bold;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            min-height: calc(100vh - 65px);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        .balance-card {
+            background: white;
+            border: 1px solid #e4eaf3;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .balance-card span {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .balance {
+            color: #1677ff;
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 7px;
+        }
+
+        .message {
+            display: none;
+            background: #e7f8ee;
+            border: 1px solid #a7dfbd;
+            color: #176b3a;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tasks {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border: 1px solid #e4eaf3;
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .task-card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .task-description {
+            color: #68758a;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            background: #eef5ff;
+            color: #1677ff;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .reward {
+            font-size: 25px;
+            color: #078a42;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .complete-btn {
+            width: 100%;
+            border: 0;
+            background: #1677ff;
+            color: white;
+            padding: 13px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .complete-btn:hover {
+            background: #005bd8;
+        }
+
+        .complete-btn:disabled {
+            background: #9aa6b5;
+            cursor: not-allowed;
+        }
+
+        .notice {
+            margin-top: 25px;
+            background: #fff8df;
+            border: 1px solid #f2df9b;
+            color: #765c00;
+            padding: 16px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            padding: 25px 10px;
+        }
+
+        @media(max-width:800px) {
+
+            .sidebar {
+                left: -260px;
+                z-index: 99;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+            .tasks {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media(max-width:450px) {
+
+            header {
+                padding: 0 12px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .logo img {
+                width: 36px;
+                height: 36px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .balance {
+                font-size: 27px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <img src="./images/penny1.jpg" alt="Penny">
+            <span>Penny</span>
+        </div>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    </header>
+
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="dashboard.html">Dashboard</a>
+
+        <a href="tasks.html" class="active">Tasks</a>
+
+        <a href="earnings.html">My Earnings</a>
+
+        <a href="daily-bonus.html">Daily Bonus</a>
+
+        <a href="withdraw.html">Withdraw</a>
+
+        <a href="withdrawals.html">Withdrawal History</a>
+
+        <a href="transactions.html">Transactions</a>
+
+        <a href="referral.html">Referral</a>
+
+        <a href="referrals.html">Referral History</a>
+
+        <a href="profile.html">Profile</a>
+
+        <a href="settings.html">Settings</a>
+
+        <a href="notifications.html">Notifications</a>
+
+        <a href="#" onclick="logout()">Logout</a>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="container">
+
+            <h1>Available Tasks</h1>
+
+            <p class="subtitle">
+                Complete available activities and earn Penny rewards.
+            </p>
+
+
+            <div class="balance-card">
+
+                <span>Current Balance</span>
+
+                <div class="balance" id="balance">
+                    ₦0.00
+                </div>
+
+            </div>
+
+
+            <div class="message" id="message"></div>
+
+
+            <div class="tasks">
+
+
+                <!-- TASK 1 -->
+
+                <div class="task-card">
+
+                    <h2>Website Visit</h2>
+
+                    <p class="task-description">
+                        Visit a website and complete the required activity.
+                    </p>
+
+                    <div class="tags">
+                        <span class="tag">Website</span>
+                        <span class="tag">Easy</span>
+                    </div>
+
+                    <div class="reward">
+                        ₦100
+                    </div>
+
+                    <button class="complete-btn" onclick="completeTask(this,100,'Website Visit','task-website')">
+                        Complete Task
+                    </button>
+
+                </div>
+
+
+                <!-- TASK 2 -->
+
+                <div class="task-card">
+
+                    <h2>Quick Survey</h2>
+
+                    <p class="task-description">
+                        Answer a short survey and submit your responses.
+                    </p>
+
+                    <div class="tags">
+                        <span class="tag">Survey</span>
+                        <span class="tag">Medium</span>
+                    </div>
+
+                    <div class="reward">
+                        ₦150
+                    </div>
+
+                    <button class="complete-btn" onclick="completeTask(this,150,'Quick Survey','task-survey')">
+                        Complete Task
+                    </button>
+
+                </div>
+
+
+                <!-- TASK 3 -->
+
+                <div class="task-card">
+
+                    <h2>Social Activity</h2>
+
+                    <p class="task-description">
+                        Complete a simple social activity to receive your reward.
+                    </p>
+
+                    <div class="tags">
+                        <span class="tag">Social</span>
+                        <span class="tag">Easy</span>
+                    </div>
+
+                    <div class="reward">
+                        ₦50
+                    </div>
+
+                    <button class="complete-btn" onclick="completeTask(this,50,'Social Activity','task-social')">
+                        Complete Task
+                    </button>
+
+                </div>
+
+
+                <!-- TASK 4 -->
+
+                <div class="task-card">
+
+                    <h2>App Activity</h2>
+
+                    <p class="task-description">
+                        Complete the required application activity.
+                    </p>
+
+                    <div class="tags">
+                        <span class="tag">App</span>
+                        <span class="tag">Medium</span>
+                    </div>
+
+                    <div class="reward">
+                        ₦500
+                    </div>
+
+                    <button class="complete-btn" onclick="completeTask(this,500,'App Activity','task-app')">
+                        Complete Task
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>Demo Mode:</strong>
+                These tasks are demonstrations for your Penny website.
+                In a real earning platform, task completion should be
+                verified by a secure backend before rewards are credited.
+
+            </div>
+
+        </div>
+
+
+        <footer>
+            © 2026 Penny. All rights reserved.
+        </footer>
+
+    </main>
+
+
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById("sidebar")
+                .classList.toggle("open");
+
+        }
+
+
+        function getBalance() {
+
+            return Number(
+                localStorage.getItem("pennyBalance") || 0
+            );
+
+        }
+
+
+        function formatMoney(amount) {
+
+            return "₦" + Number(amount).toLocaleString("en-NG", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+        }
+
+
+        function showBalance() {
+
+            document.getElementById("balance").textContent =
+                formatMoney(getBalance());
+
+        }
+
+
+        /* Get existing earnings */
+
+        function getEarnings() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem("pennyEarnings") || "[]"
+                );
+
+            } catch (error) {
+
+                return [];
+
+            }
+
+        }
+
+
+        /* Save earning */
+
+        function saveEarning(name, amount, type) {
+
+            const earnings = getEarnings();
+
+            earnings.push({
+
+                name: name,
+
+                amount: amount,
+
+                type: type,
+
+                date: new Date().toLocaleString("en-NG")
+
+            });
+
+            localStorage.setItem(
+                "pennyEarnings",
+                JSON.stringify(earnings)
+            );
+
+        }
+
+
+        /* Complete task */
+
+        function completeTask(button, reward, taskName, taskId) {
+
+            if (button.disabled) {
+                return;
+            }
+
+
+            /*
+               Prevent the same demo task from
+               being completed again after refresh.
+            */
+
+            if (localStorage.getItem("completed_" + taskId) === "true") {
+
+                button.textContent = "Task Completed";
+                button.disabled = true;
+
+                return;
+
+            }
+
+
+            let balance = getBalance();
+
+            balance = balance + reward;
+
+
+            localStorage.setItem(
+                "pennyBalance",
+                balance
+            );
+
+
+            localStorage.setItem(
+                "completed_" + taskId,
+                "true"
+            );
+
+
+            saveEarning(
+                taskName,
+                reward,
+                "task"
+            );
+
+
+            button.textContent = "Task Completed";
+
+            button.disabled = true;
+
+
+            const message =
+                document.getElementById("message");
+
+
+            message.textContent =
+                taskName +
+                " completed. " +
+                formatMoney(reward) +
+                " has been added to your demo balance.";
+
+
+            message.style.display = "block";
+
+
+            showBalance();
+
+        }
+
+
+        /* Restore completed tasks */
+
+        function restoreCompletedTasks() {
+
+            const buttons =
+                document.querySelectorAll(".complete-btn");
+
+
+            const taskIds = [
+                "task-website",
+                "task-survey",
+                "task-social",
+                "task-app"
+            ];
+
+
+            buttons.forEach(function (button, index) {
+
+                const taskId = taskIds[index];
+
+
+                if (
+                    localStorage.getItem(
+                        "completed_" + taskId
+                    ) === "true"
+                ) {
+
+                    button.textContent =
+                        "Task Completed";
+
+                    button.disabled = true;
+
+                }
+
+            });
+
+        }
+
+
+        function logout() {
+
+            localStorage.removeItem("isLoggedIn");
+
+            localStorage.removeItem("pennyUser");
+
+            window.location.replace("login.html");
+
+        }
+
+
+        showBalance();
+
+        restoreCompletedTasks();
+
+    </script>
+
+</body>
+
+</html>

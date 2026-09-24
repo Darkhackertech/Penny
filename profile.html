@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny - Profile</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8fc;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* HEADER */
+        .header {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #e3eaf2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 130px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .menu-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: #087ff5;
+            color: white;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            right: -280px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: #ffffff;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: 0.3s;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar h3 {
+            color: #087ff5;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 13px 12px;
+            margin-bottom: 6px;
+            border-radius: 7px;
+            color: #25344d;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #eaf4ff;
+            color: #087ff5;
+        }
+
+        .logout {
+            color: #e53935 !important;
+        }
+
+        /* MAIN */
+        .container {
+            width: 94%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            font-size: 30px;
+            color: #14213d;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #68758a;
+            margin-bottom: 25px;
+        }
+
+        /* PROFILE CARD */
+        .profile-card {
+            background: #ffffff;
+            border: 1px solid #e2eaf3;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .profile-cover {
+            height: 140px;
+            background: linear-gradient(135deg, #087ff5, #54b4ff);
+        }
+
+        .profile-content {
+            padding: 0 25px 25px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 5px solid #ffffff;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+            margin-top: -48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #087ff5;
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            margin-top: 12px;
+            font-size: 25px;
+            color: #172033;
+        }
+
+        .profile-username {
+            margin-top: 5px;
+            color: #718096;
+        }
+
+        /* FORM */
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #e2eaf3;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        .section-card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #35435a;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd7e5;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #087ff5;
+        }
+
+        input[readonly] {
+            background: #f4f7fa;
+            color: #68758a;
+        }
+
+        .save-btn {
+            margin-top: 20px;
+            border: none;
+            background: #087ff5;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .save-btn:hover {
+            background: #066dcc;
+        }
+
+        /* ACCOUNT INFO */
+        .info-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #718096;
+        }
+
+        .info-value {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* MESSAGE */
+        .message {
+            display: none;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 8px;
+            background: #e7f8ee;
+            color: #16834b;
+        }
+
+        /* NOTICE */
+        .notice {
+            background: #eef7ff;
+            border-left: 4px solid #087ff5;
+            padding: 16px;
+            border-radius: 8px;
+            color: #40516b;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #718096;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+            .container {
+                width: 92%;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .profile-content {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .section-card {
+                padding: 20px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .info-value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <a href="dashboard.html" class="logo">
+            <img src="./images/penny1.jpg" alt="Penny Logo">
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <h3>Penny Menu</h3>
+
+        <a href="dashboard.html">Home</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="earnings.html">My Earnings</a>
+        <a href="withdraw.html">Withdraw</a>
+        <a href="withdrawals.html">Withdrawal History</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="referral.html">Referral</a>
+        <a href="referrals.html">Referral History</a>
+        <a href="profile.html" class="active">Profile</a>
+        <a href="settings.html">Settings</a>
+        <a href="notifications.html">Notifications</a>
+        <a href="#" class="logout" onclick="logout()">Logout</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <h1 class="page-title">My Profile</h1>
+
+        <p class="subtitle">
+            View and manage your Penny account information.
+        </p>
+
+        <!-- PROFILE -->
+        <section class="profile-card">
+
+            <div class="profile-cover"></div>
+
+            <div class="profile-content">
+
+                <div class="avatar" id="avatar">
+                    P
+                </div>
+
+                <h2 class="profile-name" id="profileName">
+                    Penny User
+                </h2>
+
+                <p class="profile-username" id="profileUsername">
+                    @username
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- PERSONAL INFORMATION -->
+        <section class="section-card">
+
+            <h2>Personal Information</h2>
+
+            <form id="profileForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Username">
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+
+                </div>
+
+                <button type="submit" class="save-btn">
+                    Save Changes
+                </button>
+
+                <div class="message" id="message">
+                    Profile information saved for this demo.
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- ACCOUNT INFORMATION -->
+        <section class="section-card">
+
+            <h2>Account Information</h2>
+
+            <div class="info-list">
+
+                <div class="info-item">
+                    <span class="info-label">Account Status</span>
+                    <span class="info-value">Active</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Referral Code</span>
+                    <span class="info-value">PENNYUSER</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Member Since</span>
+                    <span class="info-value">September 2026</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- NOTICE -->
+        <div class="notice">
+            <strong>Important:</strong>
+            This profile page currently uses browser storage for demonstration.
+            A real Penny account system should store and protect user information
+            using a secure backend and database.
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Penny. All rights reserved.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        /* Load temporary profile data */
+        function loadProfile() {
+
+            const savedUser = localStorage.getItem("pennyUser");
+
+            if (!savedUser) {
+                return;
+            }
+
+            try {
+
+                const user = JSON.parse(savedUser);
+
+                if (typeof user === "object" && user !== null) {
+
+                    const fullName = user.fullName || "Penny User";
+                    const username = user.username || "username";
+                    const email = user.email || "";
+
+                    document.getElementById("fullName").value = fullName;
+                    document.getElementById("username").value = username;
+                    document.getElementById("email").value = email;
+
+                    document.getElementById("profileName").textContent = fullName;
+                    document.getElementById("profileUsername").textContent =
+                        "@" + username;
+
+                    document.getElementById("avatar").textContent =
+                        fullName.charAt(0).toUpperCase();
+                }
+
+            } catch (error) {
+
+                document.getElementById("username").value = savedUser;
+
+                document.getElementById("profileUsername").textContent =
+                    "@" + savedUser;
+
+                document.getElementById("avatar").textContent =
+                    savedUser.charAt(0).toUpperCase();
+            }
+        }
+
+        /* Save temporary profile data */
+        document.getElementById("profileForm").addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const fullName =
+                document.getElementById("fullName").value.trim();
+
+            const username =
+                document.getElementById("username").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            if (!fullName || !username || !email) {
+
+                const message = document.getElementById("message");
+
+                message.style.display = "block";
+                message.style.background = "#fff0f0";
+                message.style.color = "#c62828";
+                message.textContent =
+                    "Please fill in all profile fields.";
+
+                return;
+            }
+
+            const user = {
+                fullName: fullName,
+                username: username,
+                email: email
+            };
+
+            localStorage.setItem("pennyUser", JSON.stringify(user));
+
+            document.getElementById("profileName").textContent = fullName;
+            document.getElementById("profileUsername").textContent =
+                "@" + username;
+
+            document.getElementById("avatar").textContent =
+                fullName.charAt(0).toUpperCase();
+
+            const message = document.getElementById("message");
+
+            message.style.display = "block";
+            message.style.background = "#e7f8ee";
+            message.style.color = "#16834b";
+            message.textContent =
+                "Profile information saved for this demo.";
+        });
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("pennyUser");
+            window.location.replace("login.html");
+        }
+
+        loadProfile();
+    </script>
+
+</body>
+
+</html>
