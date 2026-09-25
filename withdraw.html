@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penny - Withdraw</title>
-
     <style>
         * {
             box-sizing: border-box;
@@ -240,7 +239,6 @@
         }
 
         @media(max-width:800px) {
-
             .sidebar {
                 left: -260px;
                 z-index: 99;
@@ -254,11 +252,9 @@
                 margin-left: 0;
                 padding: 20px 14px;
             }
-
         }
 
         @media(max-width:450px) {
-
             header {
                 padding: 0 12px;
             }
@@ -283,13 +279,12 @@
             .form-card {
                 padding: 18px;
             }
-
         }
     </style>
+
 </head>
 
 <body>
-
     <header>
 
         <div class="logo">
@@ -300,7 +295,6 @@
         <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
     </header>
-
 
     <aside class="sidebar" id="sidebar">
 
@@ -320,7 +314,6 @@
 
     </aside>
 
-
     <main class="main">
 
         <div class="container">
@@ -330,9 +323,6 @@
             <p class="subtitle">
                 Request a withdrawal from your available Penny balance.
             </p>
-
-
-            <!-- BALANCE -->
 
             <div class="balance-card">
 
@@ -346,22 +336,13 @@
 
             </div>
 
-
-            <!-- MESSAGE -->
-
-            <div class="message" id="message">
-            </div>
-
-
-            <!-- FORM -->
+            <div class="message" id="message"></div>
 
             <div class="form-card">
 
                 <h2>Withdrawal Details</h2>
 
-
                 <form id="withdrawForm">
-
 
                     <div class="form-group">
 
@@ -383,7 +364,6 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label for="accountName">
@@ -393,7 +373,6 @@
                         <input type="text" id="accountName" placeholder="Enter account name" required>
 
                     </div>
-
 
                     <div class="form-group">
 
@@ -409,7 +388,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="form-group">
 
@@ -452,7 +430,6 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label for="amount">
@@ -467,38 +444,28 @@
 
                     </div>
 
-
                     <button type="submit" class="withdraw-btn" id="withdrawButton">
-
                         Request Withdrawal
-
                     </button>
-
 
                 </form>
 
-
                 <a href="withdrawals.html" class="history-link">
-
                     View Withdrawal History
-
                 </a>
 
             </div>
 
-
             <div class="notice">
 
-                <strong>Demo Mode:</strong>
-                This withdrawal system currently uses browser storage.
-                No real bank transfer is made. A real Penny platform must
-                verify withdrawal requests on a secure server before
-                processing payments.
+                <strong>Important:</strong>
+                Your withdrawal request will be sent to Penny's secure
+                database for processing. A withdrawal remains
+                <strong>Pending</strong> until it is reviewed.
 
             </div>
 
         </div>
-
 
         <footer>
             © 2026 Penny. All rights reserved.
@@ -506,8 +473,31 @@
 
     </main>
 
+    <!-- Supabase JavaScript library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+
+        /* ==========================================
+           PENNY SUPABASE CONNECTION
+        ========================================== */
+
+        const SUPABASE_URL =
+            "https://fmfyzyxcxhntzkalggmw.supabase.co";
+
+        const SUPABASE_PUBLISHABLE_KEY =
+            "sb_publishable_D2IBmZNyBGWe-MBHB8TczA_UyBOt761";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_PUBLISHABLE_KEY
+            );
+
+
+        /* ==========================================
+           ELEMENTS
+        ========================================== */
 
         const form =
             document.getElementById("withdrawForm");
@@ -531,19 +521,10 @@
         const BALANCE_KEY =
             "pennyBalance";
 
-        const WITHDRAWN_KEY =
-            "pennyWithdrawn";
 
-        const WITHDRAWALS_KEY =
-            "pennyWithdrawals";
-
-        const TRANSACTIONS_KEY =
-            "pennyTransactions";
-
-
-        /*
-            Toggle mobile menu.
-        */
+        /* ==========================================
+           MOBILE MENU
+        ========================================== */
 
         function toggleMenu() {
 
@@ -554,73 +535,60 @@
         }
 
 
-        /*
-            Format Nigerian currency.
-        */
+        /* ==========================================
+           MONEY FORMAT
+        ========================================== */
 
         function formatMoney(amount) {
 
             return "₦" +
-                Number(amount).toLocaleString("en-NG", {
-
-                    minimumFractionDigits: 2,
-
-                    maximumFractionDigits: 2
-
-                });
+                Number(amount).toLocaleString(
+                    "en-NG",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
 
         }
 
 
-        /*
-            Get current balance safely.
-        */
+        /* ==========================================
+           CURRENT LOCAL BALANCE
+        ========================================== */
 
         function getBalance() {
 
             const value =
                 Number(
-                    localStorage.getItem(BALANCE_KEY) || 0
+                    localStorage.getItem(
+                        BALANCE_KEY
+                    ) || 0
                 );
-
 
             if (
                 !Number.isFinite(value) ||
                 value < 0
             ) {
-
                 return 0;
-
             }
-
 
             return value;
 
         }
 
 
-        /*
-            Display balance.
-        */
-
         function showBalance() {
 
             const balance =
                 getBalance();
 
-
             balanceDisplay.textContent =
                 formatMoney(balance);
-
 
             amountHint.textContent =
                 "Available: " +
                 formatMoney(balance);
-
-
-            /*
-                Update maximum allowed amount.
-            */
 
             amountInput.max =
                 balance;
@@ -628,11 +596,14 @@
         }
 
 
-        /*
-            Show message.
-        */
+        /* ==========================================
+           MESSAGE
+        ========================================== */
 
-        function showMessage(text, type) {
+        function showMessage(
+            text,
+            type
+        ) {
 
             message.textContent =
                 text;
@@ -646,10 +617,6 @@
         }
 
 
-        /*
-            Hide message.
-        */
-
         function hideMessage() {
 
             message.style.display =
@@ -658,25 +625,28 @@
         }
 
 
-        /*
-            Clean account number.
-        */
+        /* ==========================================
+           ACCOUNT NUMBER
+        ========================================== */
 
         document
             .getElementById("accountNumber")
-            .addEventListener("input", function () {
+            .addEventListener(
+                "input",
+                function () {
 
-                this.value =
-                    this.value
-                        .replace(/\D/g, "")
-                        .slice(0, 10);
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
 
-            });
+                }
+            );
 
 
-        /*
-            Update amount hint while typing.
-        */
+        /* ==========================================
+           AMOUNT INPUT
+        ========================================== */
 
         amountInput.addEventListener(
             "input",
@@ -687,7 +657,6 @@
 
                 const amount =
                     Number(this.value);
-
 
                 if (
                     Number.isFinite(amount) &&
@@ -716,443 +685,309 @@
         );
 
 
-        /*
-            Safely load withdrawal history.
-        */
+        /* ==========================================
+           GENERATE REFERENCE
+        ========================================== */
 
-        function getWithdrawals() {
+        function generateReference() {
 
-            try {
+            const random =
+                Math.random()
+                    .toString(36)
+                    .substring(2, 8)
+                    .toUpperCase();
 
-                const saved =
-                    JSON.parse(
-                        localStorage.getItem(
-                            WITHDRAWALS_KEY
-                        ) || "[]"
-                    );
-
-
-                return Array.isArray(saved)
-                    ? saved
-                    : [];
-
-            } catch (error) {
-
-                return [];
-
-            }
+            return "PEN-" +
+                Date.now() +
+                "-" +
+                random;
 
         }
 
 
-        /*
-            Safely load transactions.
-        */
-
-        function getTransactions() {
-
-            try {
-
-                const saved =
-                    JSON.parse(
-                        localStorage.getItem(
-                            TRANSACTIONS_KEY
-                        ) || "[]"
-                    );
-
-
-                return Array.isArray(saved)
-                    ? saved
-                    : [];
-
-            } catch (error) {
-
-                return [];
-
-            }
-
-        }
-
-
-        /*
-            Save withdrawal record.
-        */
-
-        function saveWithdrawal(data) {
-
-            const withdrawals =
-                getWithdrawals();
-
-
-            withdrawals.push(data);
-
-
-            localStorage.setItem(
-                WITHDRAWALS_KEY,
-                JSON.stringify(withdrawals)
-            );
-
-        }
-
-
-        /*
-            Save transaction record.
-        */
-
-        function saveTransaction(data) {
-
-            const transactions =
-                getTransactions();
-
-
-            transactions.push(data);
-
-
-            localStorage.setItem(
-                TRANSACTIONS_KEY,
-                JSON.stringify(transactions)
-            );
-
-        }
-
-
-        /*
-            Submit withdrawal.
-        */
+        /* ==========================================
+           SUBMIT WITHDRAWAL TO SUPABASE
+        ========================================== */
 
         form.addEventListener(
             "submit",
-            function (event) {
+            async function (event) {
 
                 event.preventDefault();
 
                 hideMessage();
 
-
-                /*
-                    Get all form values.
-                */
-
-                const method =
-                    document.getElementById("method").value;
-
-                const accountName =
-                    document
-                        .getElementById("accountName")
-                        .value
-                        .trim();
-
-                const accountNumber =
-                    document
-                        .getElementById("accountNumber")
-                        .value
-                        .trim();
-
-                const bank =
-                    document.getElementById("bank").value;
-
-                const amount =
-                    Number(amountInput.value);
-
-
-                /*
-                    Get balance at the exact moment
-                    of withdrawal validation.
-                */
-
-                const balance =
-                    getBalance();
-
-
-                /*
-                    METHOD VALIDATION
-                */
-
-                if (!method) {
-
-                    showMessage(
-                        "Please select a withdrawal method.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    ACCOUNT NAME VALIDATION
-                */
-
-                if (accountName.length < 2) {
-
-                    showMessage(
-                        "Please enter a valid account name.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    ACCOUNT NUMBER VALIDATION
-                */
-
-                if (!/^\d{10}$/.test(accountNumber)) {
-
-                    showMessage(
-                        "Account number must contain exactly 10 digits.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    BANK VALIDATION
-                */
-
-                if (!bank) {
-
-                    showMessage(
-                        "Please select your bank.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    AMOUNT VALIDATION
-                */
-
-                if (
-                    !Number.isFinite(amount) ||
-                    amount <= 0
-                ) {
-
-                    showMessage(
-                        "Please enter a valid withdrawal amount.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    PREVENT DECIMAL AMOUNTS
-                    for this demo.
-                */
-
-                if (!Number.isInteger(amount)) {
-
-                    showMessage(
-                        "Withdrawal amount must be a whole number.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    MOST IMPORTANT CHECK:
-                    User cannot withdraw more
-                    than the current balance.
-                */
-
-                if (amount > balance) {
-
-                    showMessage(
-                        "Insufficient balance. You only have " +
-                        formatMoney(balance) +
-                        " available.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    Prevent withdrawal when balance is zero.
-                */
-
-                if (balance <= 0) {
-
-                    showMessage(
-                        "You do not have enough balance to withdraw.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                    Disable button while processing
-                    the demo request.
-                */
-
                 withdrawButton.disabled =
                     true;
 
                 withdrawButton.textContent =
-                    "Processing...";
+                    "Checking...";
 
 
-                /*
-                    Calculate new balance.
-                */
+                try {
 
-                const newBalance =
-                    balance - amount;
+                    /* Get logged-in user */
 
-
-                /*
-                    Update balance.
-                */
-
-                localStorage.setItem(
-                    BALANCE_KEY,
-                    String(newBalance)
-                );
+                    const {
+                        data: {
+                            user
+                        },
+                        error: userError
+                    } =
+                        await supabaseClient
+                            .auth
+                            .getUser();
 
 
-                /*
-                    Update total withdrawn.
-                */
+                    if (
+                        userError ||
+                        !user
+                    ) {
 
-                const previousWithdrawn =
-                    Number(
-                        localStorage.getItem(
-                            WITHDRAWN_KEY
-                        ) || 0
+                        showMessage(
+                            "Please log in to your Penny account before making a withdrawal.",
+                            "error"
+                        );
+
+                        withdrawButton.disabled =
+                            false;
+
+                        withdrawButton.textContent =
+                            "Request Withdrawal";
+
+                        return;
+
+                    }
+
+
+                    /* Get form values */
+
+                    const method =
+                        document
+                            .getElementById("method")
+                            .value;
+
+                    const accountName =
+                        document
+                            .getElementById("accountName")
+                            .value
+                            .trim();
+
+                    const accountNumber =
+                        document
+                            .getElementById("accountNumber")
+                            .value
+                            .trim();
+
+                    const bank =
+                        document
+                            .getElementById("bank")
+                            .value;
+
+                    const amount =
+                        Number(
+                            amountInput.value
+                        );
+
+                    const balance =
+                        getBalance();
+
+
+                    /* Validation */
+
+                    if (!method) {
+
+                        throw new Error(
+                            "Please select a withdrawal method."
+                        );
+
+                    }
+
+
+                    if (
+                        accountName.length < 2
+                    ) {
+
+                        throw new Error(
+                            "Please enter a valid account name."
+                        );
+
+                    }
+
+
+                    if (
+                        !/^\d{10}$/.test(
+                            accountNumber
+                        )
+                    ) {
+
+                        throw new Error(
+                            "Account number must contain exactly 10 digits."
+                        );
+
+                    }
+
+
+                    if (!bank) {
+
+                        throw new Error(
+                            "Please select your bank."
+                        );
+
+                    }
+
+
+                    if (
+                        !Number.isFinite(amount) ||
+                        amount <= 0
+                    ) {
+
+                        throw new Error(
+                            "Please enter a valid withdrawal amount."
+                        );
+
+                    }
+
+
+                    if (
+                        !Number.isInteger(amount)
+                    ) {
+
+                        throw new Error(
+                            "Withdrawal amount must be a whole number."
+                        );
+
+                    }
+
+
+                    if (balance <= 0) {
+
+                        throw new Error(
+                            "You do not have enough balance to withdraw."
+                        );
+
+                    }
+
+
+                    if (amount > balance) {
+
+                        throw new Error(
+                            "Insufficient balance. You only have " +
+                            formatMoney(balance) +
+                            " available."
+                        );
+
+                    }
+
+
+                    withdrawButton.textContent =
+                        "Submitting...";
+
+
+                    /* Generate reference */
+
+                    const reference =
+                        generateReference();
+
+
+                    /* Insert into Supabase */
+
+                    const {
+                        error: insertError
+                    } =
+                        await supabaseClient
+                            .from("withdrawals")
+                            .insert({
+
+                                user_id:
+                                    user.id,
+
+                                amount:
+                                    amount,
+
+                                method:
+                                    method,
+
+                                bank:
+                                    bank,
+
+                                account_name:
+                                    accountName,
+
+                                account_number:
+                                    accountNumber,
+
+                                reference:
+                                    reference,
+
+                                status:
+                                    "pending"
+
+                            });
+
+
+                    if (insertError) {
+
+                        console.error(
+                            insertError
+                        );
+
+                        throw new Error(
+                            "Unable to submit withdrawal. " +
+                            insertError.message
+                        );
+
+                    }
+
+
+                    /*
+                       For now we keep your existing
+                       Penny balance system working.
+    
+                       Later we should move the actual
+                       balance deduction to Supabase/server
+                       so users cannot manipulate their
+                       balance through browser storage.
+                    */
+
+                    const newBalance =
+                        balance - amount;
+
+
+                    localStorage.setItem(
+                        BALANCE_KEY,
+                        String(newBalance)
                     );
 
 
-                localStorage.setItem(
-                    WITHDRAWN_KEY,
-                    String(
-                        previousWithdrawn + amount
-                    )
-                );
+                    showBalance();
 
 
-                /*
-                    Create a unique reference.
-                */
-
-                const reference =
-                    "PEN-" +
-                    Date.now();
-
-
-                /*
-                    Withdrawal record.
-                */
-
-                const withdrawal = {
-
-                    id: reference,
-
-                    reference: reference,
-
-                    amount: amount,
-
-                    method: method,
-
-                    accountName: accountName,
-
-                    accountNumber:
-                        "****" +
-                        accountNumber.slice(-4),
-
-                    bank: bank,
-
-                    status: "Pending",
-
-                    date:
-                        new Date().toLocaleString("en-NG"),
-
-                    timestamp:
-                        Date.now()
-
-                };
-
-
-                saveWithdrawal(
-                    withdrawal
-                );
-
-
-                /*
-                    Transaction record.
-                */
-
-                saveTransaction({
-
-                    id:
-                        "TXN-" +
-                        Date.now(),
-
-                    reference:
+                    showMessage(
+                        "Withdrawal request submitted successfully. " +
+                        formatMoney(amount) +
+                        " is now pending. Reference: " +
                         reference,
-
-                    description:
-                        "Bank Withdrawal",
-
-                    type:
-                        "debit",
-
-                    amount:
-                        amount,
-
-                    status:
-                        "Pending",
-
-                    date:
-                        new Date().toLocaleString("en-NG"),
-
-                    timestamp:
-                        Date.now()
-
-                });
+                        "success"
+                    );
 
 
-                /*
-                    Update screen.
-                */
-
-                showBalance();
+                    form.reset();
 
 
-                showMessage(
-                    "Withdrawal request created successfully. " +
-                    formatMoney(amount) +
-                    " has been reserved from your balance. " +
-                    "Reference: " +
-                    reference,
-                    "success"
-                );
+                } catch (error) {
 
+                    console.error(
+                        error
+                    );
 
-                /*
-                    Clear form.
-                */
+                    showMessage(
+                        error.message ||
+                        "Something went wrong while submitting your withdrawal.",
+                        "error"
+                    );
 
-                form.reset();
+                }
 
 
                 withdrawButton.disabled =
@@ -1165,9 +1000,9 @@
         );
 
 
-        /*
-            Logout.
-        */
+        /* ==========================================
+           LOGOUT
+        ========================================== */
 
         function logout() {
 
@@ -1179,16 +1014,25 @@
                 "pennyUser"
             );
 
-            window.location.replace(
-                "login.html"
-            );
+            supabaseClient
+                .auth
+                .signOut()
+                .finally(
+                    function () {
+
+                        window.location.replace(
+                            "login.html"
+                        );
+
+                    }
+                );
 
         }
 
 
-        /*
-            Start page.
-        */
+        /* ==========================================
+           START PAGE
+        ========================================== */
 
         showBalance();
 
